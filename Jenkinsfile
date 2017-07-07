@@ -96,7 +96,7 @@ volumes:[
         // perform docker login to quay as the docker-pipeline-plugin doesn't work with the next auth json format
         withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: config.container_repo.jenkins_creds_id,
                         usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-          sh "docker login briarregistry-microsoft.azurecr.io -u briarRegistry -p 5XuGNf=zidx=/K46X7ig/BKKvO9nGIrE"
+          sh "docker login briarregistry-microsoft.azurecr.io -u briarregistry -p 5XuGNf=zidx=/K46X7ig/BKKvO9nGIrE"
         }
 
         // build and publish container
