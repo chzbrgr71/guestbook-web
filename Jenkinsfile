@@ -19,7 +19,7 @@ volumes:[
   node ('jenkins-pipeline') {
 
     def pwd = pwd()
-    def chart_dir = "${pwd}/guestbook-web"
+    def chart_dir = "${pwd}/charts/guestbook-web"
 
     checkout scm
 
