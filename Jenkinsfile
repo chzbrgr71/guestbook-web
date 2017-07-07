@@ -62,6 +62,7 @@ volumes:[
     stage ('compile and test') {
 
       container('golang') {
+        sh "go get github.com/denisenkom/go-mssqldb"
         sh "go test -v -race ./..."
         sh "make bootstrap build"
       }
