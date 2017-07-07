@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: go-web
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   template:
     metadata:
       labels:
@@ -15,14 +15,14 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         env:
         - name: SQLSERVER
-          value: "guestbook-db.default.svc.cluster.local"
+          value: "{{ .Values.dbconfig.server }}"
         - name: SQLPORT
-          value: "10433"
+          value: "{{ .Values.dbconfig.port }}"
         - name: SQLID
-          value: "sa"
+          value: "{{ .Values.dbconfig.id }}"
         - name: SQLPWD
-          value: "Pass@word"
+          value: "{{ .Values.dbconfig.pwd }}"
         - name: SQLDB
-          value: "sql_guestbook"
+          value: "{{ .Values.dbconfig.dbname }}"
         ports:
-          - containerPort: 8080
+          - containerPort: {{ .Values.service.internalPort }}
