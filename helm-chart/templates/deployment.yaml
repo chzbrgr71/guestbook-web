@@ -1,0 +1,28 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: go-web
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: go-web
+        app: go-web
+    spec:
+      containers:
+      - name: go-web
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        env:
+        - name: SQLSERVER
+          value: "guestbook-db.default.svc.cluster.local"
+        - name: SQLPORT
+          value: "10433"
+        - name: SQLID
+          value: "sa"
+        - name: SQLPWD
+          value: "Pass@word"
+        - name: SQLDB
+          value: "sql_guestbook"
+        ports:
+          - containerPort: 8080
