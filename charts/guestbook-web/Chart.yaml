@@ -1,7 +1,7 @@
-apiVersion: v1
-description: Simple golang web app. Displays entries from SQL Server DB
 name: guestbook-web
-version: 1.1.1
+home: https://github.com/chzbrgr71/guestbook-web
+version: 1.2
+description: Super fun times with golang web app reading from SQL Server
 maintainers: 
   - name: chzbrgr71
     email: brianisrunning@gmail.com

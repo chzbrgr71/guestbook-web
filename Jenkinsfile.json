@@ -4,7 +4,8 @@
     "replicas": "2",
     "cpu": "10m",
     "memory": "128Mi",
-    "test": true
+    "test": true,
+    "hostname": "go-web.brianredmond.io"
   },
   "container_repo": {
     "host": "briarregistry-microsoft.azurecr.io",
