@@ -5,7 +5,7 @@ replicaCount: 2
 image:
   repository: briarregistry-microsoft.azurecr.io/chzbrgr71/go-guestbook
   tag: latest
-  pullPolicy: IfNotPresent
+  pullPolicy: "Always"
 service:
   name: go-web
   type: LoadBalancer
