@@ -24,7 +24,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	var htmlHeader = "<!DOCTYPE html><html><head><style>table {font-family: arial, sans-serif;border-collapse: collapse;width: 100%;}td, th {border: 1px solid #dddddd;text-align: left;padding: 8px;}tr:nth-child(even) {background-color: #dddddd;}</style></head><body>"
 	fmt.Fprintf(w, htmlHeader)
 	var hostname = getHostname()
-	var appversion = "1.2.1"
+	var appversion = "1.2.2"
 	fmt.Fprintf(w, "<h1>Golang Guestbook (v%s)</h1><p>Hostname: %s</p><table><tr><th>Date</th><th>Name</th><th>Phone</th><th>Sentiment</th><th>Message</th></tr>", appversion, hostname)
 
 	// query DB and loop through rows
