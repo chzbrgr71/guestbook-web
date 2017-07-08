@@ -93,7 +93,7 @@ volumes:[
 
       container('docker') {
 
-        // perform docker login to quay as the docker-pipeline-plugin doesn't work with the next auth json format
+        // Login to ACR
         withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: config.container_repo.jenkins_creds_id,
                         usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
           sh "docker login briarregistry-microsoft.azurecr.io -u briarregistry -p 5XuGNf=zidx=/K46X7ig/BKKvO9nGIrE"
