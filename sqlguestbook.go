@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 
@@ -52,6 +53,15 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "<tr><td>"+date+"</td><td>"+name+"</td><td>"+phone+"</td><td>"+score+"</td><td>"+message+"</td></tr>")
 	}
 	fmt.Fprintf(w, "</table>")
+}
+
+// HealthCheckHandler e.g. http.HandleFunc("/health-check", HealthCheckHandler)
+func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
+	// A very simple health check.
+	//w.WriteHeader(http.StatusUnauthorized)
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	io.WriteString(w, `{"alive": true}`)
 }
 
 func main() {

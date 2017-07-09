@@ -1,18 +1,18 @@
 {
   "app": {
-    "name": "go-web",
+    "name": "guestbook-web",
     "replicas": "2",
     "cpu": "10m",
     "memory": "128Mi",
     "test": true,
-    "hostname": "go-web.brianredmond.io"
+    "hostname": "guestbook-web.brianredmond.io"
   },
   "container_repo": {
     "host": "briarregistry-microsoft.azurecr.io",
     "master_acct": "chzbrgr71",
     "alt_acct": "chzbrgr71",
     "jenkins_creds_id": "acr_creds",
-    "repo": "go-guestbook",
+    "repo": "guestbook-web",
     "dockeremail": ".",
     "dockerfile": "./"
   },

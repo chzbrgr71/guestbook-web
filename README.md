@@ -12,3 +12,11 @@ Environment variables:
 * SQLID
 * SQLPWD
 * SQLDB
+
+## Docker
+
+```
+docker build --build-arg VCS_REF=brian999 -t chzbrgr71/go-guestbook .
+
+docker run -d -e "SQLSERVER=23.99.10.5" -e "SQLPORT=10433" -e "SQLID=sa" -e "SQLPWD=Pass@word" -e "SQLDB=sql_guestbook" --name web -p 80:8080 chzbrgr71/go-guestbook
+```

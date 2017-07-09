@@ -63,12 +63,12 @@ volumes:[
 
       container('golang') {
         sh "go get github.com/denisenkom/go-mssqldb"
-        sh "go test -v -race ./..."
         sh "go build"
+        sh "go test -v"
       }
     }
 
-    stage ('test deployment') {
+    stage ('test k8s deployment') {
 
       container('helm') {
 
