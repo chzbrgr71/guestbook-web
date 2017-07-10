@@ -21,7 +21,7 @@ dbconfig:
 # Ingress settings
 ingress:
   enabled: true
-  hostname: guestbook-web.brianredmond.io
+  hostname: guestbook-web.brianredmond.co
   annotations:
      kubernetes.io/ingress.class: nginx
      kubernetes.io/tls-acme: "true"

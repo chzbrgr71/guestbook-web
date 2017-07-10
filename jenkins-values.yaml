@@ -4,7 +4,7 @@
 
 Master:
   Memory: "512Mi"
-  HostName: jenkins.brianredmond.io
+  HostName: jenkins.brianredmond.co
   ServiceType: ClusterIP
   InstallPlugins:
       - kubernetes:0.11 
@@ -27,9 +27,9 @@ Master:
       kubernetes.io/tls-acme: "true"
 
     TLS:
-      - secretName: jenkins.brianredmond.io
+      - secretName: jenkins.brianredmond.co
         hosts:
-          - jenkins.brianredmond.io
+          - jenkins.brianredmond.co
 
 Agent:
   Enabled: false

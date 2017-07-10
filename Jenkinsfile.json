@@ -5,7 +5,7 @@
     "cpu": "10m",
     "memory": "128Mi",
     "test": true,
-    "hostname": "guestbook-web.brianredmond.io"
+    "hostname": "guestbook-web.brianredmond.co"
   },
   "container_repo": {
     "host": "briarregistry-microsoft.azurecr.io",

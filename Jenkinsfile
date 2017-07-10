@@ -3,7 +3,7 @@
 // load pipeline functions
 // Requires pipeline-github-lib plugin to load library from github
 @Library('github.com/chzbrgr71/jenkins-pipeline@master')
-def pipeline = new io.brianredmond.Pipeline()
+def pipeline = new co.brianredmond.Pipeline()
 
 podTemplate(label: 'jenkins-pipeline', containers: [
     containerTemplate(name: 'jnlp', image: 'jenkinsci/jnlp-slave:2.62', args: '${computer.jnlpmac} ${computer.name}', workingDir: '/home/jenkins', resourceRequestCpu: '200m', resourceLimitCpu: '200m', resourceRequestMemory: '256Mi', resourceLimitMemory: '256Mi'),
@@ -59,7 +59,7 @@ volumes:[
     // compile tag list
     def image_tags_list = pipeline.getMapValues(image_tags_map)
 
-    stage ('compile and test') {
+    stage ('BUILD: code compile and test') {
 
       container('golang') {
         sh "go get github.com/denisenkom/go-mssqldb"
@@ -68,7 +68,7 @@ volumes:[
       }
     }
 
-    stage ('test k8s deployment') {
+    stage ('TEST: k8s deployment') {
 
       container('helm') {
 
@@ -89,7 +89,7 @@ volumes:[
       }
     }
 
-    stage ('publish container') {
+    stage ('BUILD: containerize and publish') {
 
       container('docker') {
 
@@ -112,21 +112,24 @@ volumes:[
 
     }
 
-    // deploy only the master branch
-    if (env.BRANCH_NAME == 'master') {
-      stage ('deploy to k8s') {
-        container('helm') {
-          // Deploy using Helm chart
-          pipeline.helmDeploy(
-            dry_run       : false,
-            name          : config.app.name,
-            namespace     : config.app.name,
-            version_tag   : image_tags_list.get(0),
-            chart_dir     : chart_dir,
-            replicas      : config.app.replicas,
-            cpu           : config.app.cpu,
-            memory        : config.app.memory
-          )
+    stage ('DEPLOY: helm deploy to K8s') {
+
+      // deploy only the master branch
+      if (env.BRANCH_NAME == 'master') {
+        stage ('deploy to k8s') {
+          container('helm') {
+            // Deploy using Helm chart
+            pipeline.helmDeploy(
+              dry_run       : false,
+              name          : config.app.name,
+              namespace     : config.app.name,
+              version_tag   : image_tags_list.get(0),
+              chart_dir     : chart_dir,
+              replicas      : config.app.replicas,
+              cpu           : config.app.cpu,
+              memory        : config.app.memory
+            )
+          }
         }
       }
     }
