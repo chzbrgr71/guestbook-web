@@ -109,14 +109,9 @@ volumes:[
             auth_id   : config.container_repo.jenkins_creds_id
         )
       }
-
     }
 
-    stage ('DEPLOY: helm deploy to K8s') {
-
-      // deploy only the master branch
-      if (env.BRANCH_NAME == 'master') {
-        stage ('deploy to k8s') {
+        stage ('DEPLOY: helm deploy to k8s') {
           container('helm') {
             // Deploy using Helm chart
             pipeline.helmDeploy(
@@ -131,7 +126,5 @@ volumes:[
             )
           }
         }
-      }
-    }
   }
 }
