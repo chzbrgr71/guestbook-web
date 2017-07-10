@@ -70,7 +70,7 @@ metadata:
   name: myregistrykey
 type: Opaque
 data:
-  docker-server: briarregistry-microsoft.azurecr.io
-  docker-username: briarregistry
-  docker-password: 5XuGNf=zidx=/K46X7ig/BKKvO9nGIrE
-  docker-email: brianisrunning@gmail.com
+  docker-server: YnJpYXJyZWdpc3RyeS1taWNyb3NvZnQuYXp1cmVjci5pbw==
+  docker-username: YnJpYXJyZWdpc3RyeQ==
+  docker-password: NVh1R05mPXppZHg9L0s0Nlg3aWcvQktLdk85bkdJckU=
+  docker-email: YnJpYW5pc3J1bm5pbmdAZ21haWwuY29t
