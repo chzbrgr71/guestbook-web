@@ -63,3 +63,14 @@ spec:
             value: "{{ .Values.dbconfig.pwd }}"
           - name: SQLDB
             value: "{{ .Values.dbconfig.dbname }}"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: myregistrykey
+type: Opaque
+data:
+  docker-server: briarregistry-microsoft.azurecr.io
+  docker-username: briarregistry
+  docker-password: 5XuGNf=zidx=/K46X7ig/BKKvO9nGIrE
+  docker-email: brianisrunning@gmail.com
