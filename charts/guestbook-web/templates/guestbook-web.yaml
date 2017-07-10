@@ -39,6 +39,8 @@ spec:
         chart: "{{.Chart.Name}}-{{.Chart.Version}}"
         component: "{{.Release.Name}}-{{.Values.component}}"
     spec:
+      imagePullSecrets:
+        - name: myregistrykey      
       containers:
         - name: {{ template "fullname" . }}
           image: "{{.Values.image}}:{{.Values.imageTag}}"
@@ -61,5 +63,3 @@ spec:
             value: "{{ .Values.dbconfig.pwd }}"
           - name: SQLDB
             value: "{{ .Values.dbconfig.dbname }}"
-        imagePullSecrets:
-          - name: myregistrykey
