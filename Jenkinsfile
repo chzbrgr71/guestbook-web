@@ -111,20 +111,21 @@ volumes:[
       }
     }
 
-        stage ('DEPLOY: helm deploy to k8s') {
-          container('helm') {
-            // Deploy using Helm chart
-            pipeline.helmDeploy(
-              dry_run       : false,
-              name          : config.app.name,
-              namespace     : config.app.name,
-              version_tag   : image_tags_list.get(0),
-              chart_dir     : chart_dir,
-              replicas      : config.app.replicas,
-              cpu           : config.app.cpu,
-              memory        : config.app.memory
-            )
-          }
-        }
+    stage ('DEPLOY: helm deploy to k8s') {
+      
+      container('helm') {
+        // Deploy using Helm chart
+        pipeline.helmDeploy(
+            dry_run       : false,
+            name          : config.app.name,
+            namespace     : config.app.name,
+            version_tag   : image_tags_list.get(0),
+            chart_dir     : chart_dir,
+            replicas      : config.app.replicas,
+            cpu           : config.app.cpu,
+            memory        : config.app.memory
+        )
+      }
+    }
   }
 }
