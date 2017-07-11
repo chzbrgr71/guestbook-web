@@ -114,6 +114,11 @@ volumes:[
       }
     }
 
+    stage ('SECURE: scan container images for vulnerabilities') {
+      println "Run vulnerability scan of container images in repo"
+    
+    }
+
     stage ('DEPLOY: helm release to k8s') {
       
       container('helm') {
