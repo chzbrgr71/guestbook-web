@@ -114,7 +114,7 @@ volumes:[
       }
     }
 
-    stage ('DEPLOY: helm deploy to k8s') {
+    stage ('DEPLOY: helm release to k8s') {
       
       container('helm') {
         // Deploy using Helm chart
