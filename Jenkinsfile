@@ -76,6 +76,7 @@ volumes:[
         pipeline.helmLint(chart_dir)
 
         // run dry-run helm chart installation
+        /*
         pipeline.helmDeploy(
           dry_run       : true,
           name          : config.app.name,
@@ -87,7 +88,7 @@ volumes:[
           memory        : config.app.memory,
           hostname      : config.app.hostname
         )
-
+*/
       }
     }
 
