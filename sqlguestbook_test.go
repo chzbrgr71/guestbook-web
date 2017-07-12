@@ -21,7 +21,8 @@ func TestMyHandler(t *testing.T) {
 	handler.ServeHTTP(rr, req)
 
 	// Check the status code is what we expect.
-	if status := rr.Code; status != http.StatusOK {
+	//if status := rr.Code; status != http.StatusOK {
+	if status := rr.Code; status != http.StatusBadGateway {
 		t.Errorf("handler returned wrong status code: got %v want %v",
 			status, http.StatusOK)
 	}
