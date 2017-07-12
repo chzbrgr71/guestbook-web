@@ -13,7 +13,7 @@ imagePullPolicy: "Always"
 cpu: "10m"
 memory: "128Mi"
 dbconfig:
-  server: 23.99.10.5
+  server: guestbook-db.default.svc.cluster.local
   port: 10433
   id: sa
   pwd: Pass@word

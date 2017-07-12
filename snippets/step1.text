@@ -1,0 +1,38 @@
+package main
+
+import (
+	"fmt"
+	"io"
+	"net/http"
+)
+
+var (
+	date    string
+	name    string
+	phone   string
+	message string
+	score   string
+)
+
+func indexHandler(w http.ResponseWriter, r *http.Request) {
+	// begin web page
+	var htmlHeader = "<!DOCTYPE html><html><head><style>table {font-family: Courier New;width: 100%;}td, th {border: 1px solid;text-align: left;padding: 8px;}</style></head><body>"
+	fmt.Fprintf(w, htmlHeader)
+	var appversion = "1.0.0"
+	fmt.Fprintf(w, "<h1>Golang Guestbook (v%s)</h1><table><tr><th>Date</th><th>Name</th><th>Phone</th><th>Sentiment</th><th>Message</th></tr>", appversion)
+	fmt.Fprintf(w, "</table>")
+}
+
+// HealthCheckHandler e.g. http.HandleFunc("/health-check", HealthCheckHandler)
+func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
+	// A very simple health check.
+	//w.WriteHeader(http.StatusUnauthorized)
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	io.WriteString(w, `{"alive": true}`)
+}
+
+func main() {
+	http.HandleFunc("/", indexHandler)
+	http.ListenAndServe(":8080", nil)
+}
