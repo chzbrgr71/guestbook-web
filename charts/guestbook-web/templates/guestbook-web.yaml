@@ -1,0 +1,76 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    component: "{{.Release.Name}}-{{.Values.component}}"
+spec:
+  ports:
+    - port: {{.Values.servicePort}}
+      targetPort: {{.Values.containerPort}}
+  selector:
+    component: "{{.Release.Name}}-{{.Values.component}}"
+  type: {{ default "ClusterIP" .Values.serviceType | quote }}
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    component: "{{.Release.Name}}-{{.Values.component}}"
+spec:
+  replicas: {{ default 1 .Values.replicas }}
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      component: "{{.Release.Name}}-{{.Values.component}}"
+  template:
+    metadata:
+      labels:
+        heritage: {{.Release.Service | quote }}
+        release: {{.Release.Name | quote }}
+        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+        component: "{{.Release.Name}}-{{.Values.component}}"
+    spec:
+      imagePullSecrets:
+        - name: myregistrykey      
+      containers:
+        - name: {{ template "fullname" . }}
+          image: "{{.Values.image}}:{{.Values.imageTag}}"
+          imagePullPolicy: "{{.Values.imagePullPolicy}}"
+          ports:
+          - name: http
+            containerPort: {{.Values.containerPort}}
+          resources:
+            requests:
+              cpu: "{{.Values.cpu}}"
+              memory: "{{.Values.memory}}"
+          env:
+          - name: SQLSERVER
+            value: "{{ .Values.dbconfig.server }}"
+          - name: SQLPORT
+            value: "{{ .Values.dbconfig.port }}"
+          - name: SQLID
+            value: "{{ .Values.dbconfig.id }}"
+          - name: SQLPWD
+            value: "{{ .Values.dbconfig.pwd }}"
+          - name: SQLDB
+            value: "{{ .Values.dbconfig.dbname }}"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: myregistrykey
+type: Opaque
+data:
+  docker-server: YnJpYXJyZWdpc3RyeS1taWNyb3NvZnQuYXp1cmVjci5pbw==
+  docker-username: YnJpYXJyZWdpc3RyeQ==
+  docker-password: NVh1R05mPXppZHg9L0s0Nlg3aWcvQktLdk85bkdJckU=
+  docker-email: YnJpYW5pc3J1bm5pbmdAZ21haWwuY29t
