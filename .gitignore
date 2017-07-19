@@ -1,2 +1,3 @@
 Jenkinsfile
 kube-deploy.yaml
+jenkins-values.yaml
