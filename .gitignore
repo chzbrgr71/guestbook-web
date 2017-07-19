@@ -1,3 +1,5 @@
+**/.DS_Store
 Jenkinsfile
 kube-deploy.yaml
 jenkins-values.yaml
+guestbook-web/values.yaml
