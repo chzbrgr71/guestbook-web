@@ -37,7 +37,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer conn.Close()
 
-	rows, err := conn.Query("SELECT * FROM guestlog")
+	rows, err := conn.Query("select * from guestlog order by entrydate DESC")
 	if err != nil {
 		log.Fatal("Cannot query: ", err.Error())
 		return

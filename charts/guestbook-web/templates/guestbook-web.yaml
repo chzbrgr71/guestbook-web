@@ -40,7 +40,7 @@ spec:
         component: "{{.Release.Name}}-{{.Values.component}}"
     spec:
       imagePullSecrets:
-        - name: myregistrykey      
+        - name: acrregistrykey      
       containers:
         - name: {{ template "fullname" . }}
           image: "{{.Values.image}}:{{.Values.imageTag}}"
@@ -67,10 +67,10 @@ spec:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: myregistrykey
+  name: acrregistrykey
 type: Opaque
 data:
-  docker-server: YnJpYXJyZWdpc3RyeS1taWNyb3NvZnQuYXp1cmVjci5pbw==
-  docker-username: YnJpYXJyZWdpc3RyeQ==
-  docker-password: NVh1R05mPXppZHg9L0s0Nlg3aWcvQktLdk85bkdJckU=
-  docker-email: YnJpYW5pc3J1bm5pbmdAZ21haWwuY29t
+  docker-server: "{{ .Values.acr.docker-server }}"
+  docker-username: "{{ .Values.acr.docker-username }}"
+  docker-password: "{{ .Values.acr.docker-password }}"
+  docker-email: "{{ .Values.acr.docker-email }}"
