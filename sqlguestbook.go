@@ -98,7 +98,7 @@ func getConnectString() string {
 	}
 	var sqlpwd = os.Getenv("SQLPWD")
 	if sqlpwd == "" {
-		sqlpwd = "Pass@word"
+		sqlpwd = "Your@Password"
 	}
 	var sqldb = os.Getenv("SQLDB")
 	if sqldb == "" {

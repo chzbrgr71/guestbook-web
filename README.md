@@ -1,25 +1,16 @@
-# Guestbook Web App - Go
-This simple go app works with some other demos. Connects to a SQL Server DB running in Kubernetes and is deployed via Helm chart
+# Guestbook CI/CD Demo with Jenkins
+This app demonstrates a Jenkins pipeline with a Golang based web app and a SQL Server on Linux container. Containers are deployed to ACS Kubernetes via Helm charts and images are stored in Azure Container Registry
 
-## Container Setup
+## Demo Setup
 
-Image: chzbrgr71/go-guestbook:<tag>
 
-Environment variables:
+## Golang web app
+
+Simple web page that connects to SQL Server and builds a table. Uses the following environment variables:
 
 * SQLSERVER
 * SQLPORT
 * SQLID
 * SQLPWD
 * SQLDB
-
-## Docker
-
-```
-docker build --build-arg VCS_REF=brian999 -t chzbrgr71/go-guestbook .
-
-docker run -d -e "SQLSERVER=23.99.10.5" -e "SQLPORT=10433" -e "SQLID=sa" -e "SQLPWD=Pass@word" -e "SQLDB=sql_guestbook" --name web -p 80:8080 chzbrgr71/go-guestbook
-```
-
-## Helm Chart
-test
+* GIT_SHA
