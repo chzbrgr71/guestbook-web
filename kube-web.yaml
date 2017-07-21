@@ -35,7 +35,7 @@ spec:
         - name: SQLID
           value: "sa"
         - name: SQLPWD
-          value: "Pass@word"
+          value: "Your@Password"
         - name: SQLDB
           value: "sql_guestbook"
         ports:
