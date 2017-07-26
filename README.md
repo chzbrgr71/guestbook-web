@@ -10,9 +10,11 @@ This app demonstrates a Jenkins pipeline with a Golang based web app and a SQL S
 ### Database setup
 
 * Helm chart install: ```helm install --name=guestbook-db ./charts/guestbook-db```
+* Wait for IP: ```watch kubectl get svc guestbook-db-guestbook-db```
+* Get IP: ```export SQLDB_IP=$(kubectl get svc guestbook-db-guestbook-db --template "{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}")```
 * Seed data (use sqlcmd CLI tool)
 ```
-sqlcmd -S <sql service external IP>,<port> -U sa -P 'Your@Password'
+sqlcmd -S $SQLDB_IP,10433 -U sa -P 'Your@Password'
 CREATE DATABASE sql_guestbook;
 USE sql_guestbook;
 CREATE TABLE guestlog (entrydate DATETIME, name NVARCHAR(30), phone NVARCHAR(30), message TEXT, sentiment_score NVARCHAR(30));
