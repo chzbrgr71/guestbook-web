@@ -5,6 +5,8 @@ This app demonstrates a Jenkins pipeline with a Golang based web app and a SQL S
 
 ### Setup ACS Kubernetes
 
+### Azure Container Registry
+
 ### Install Jenkins
 
 ### Database setup
