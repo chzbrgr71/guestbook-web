@@ -1,3 +1,26 @@
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1beta1
+metadata:
+  name: azure-disk
+provisioner: kubernetes.io/azure-disk
+parameters:
+  skuName: Standard_LRS
+  location: {{.Values.disklocation}}
+---
+apiVersion: "v1"
+kind: "PersistentVolumeClaim"
+metadata:
+  name: "sqldb-pv"
+  annotations:
+    volume.beta.kubernetes.io/storage-class: "azure-disk"
+spec:
+  accessModes:
+    - {{.Values.accessModes}}
+  resources:
+    requests:
+      storage: {{.Values.disksize}}
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -25,7 +48,7 @@ metadata:
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
     component: "{{.Release.Name}}-{{.Values.component}}"
 spec:
-  replicas: {{ default 1 .Values.replicas }}
+  replicas: 1
   strategy:
     type: RollingUpdate
   selector:
@@ -39,38 +62,18 @@ spec:
         chart: "{{.Chart.Name}}-{{.Chart.Version}}"
         component: "{{.Release.Name}}-{{.Values.component}}"
     spec:
-      imagePullSecrets:
-        - name: acrregistrykey      
       containers:
-        - name: {{ template "fullname" . }}
-          image: "{{.Values.image}}:{{.Values.imageTag}}"
-          imagePullPolicy: "{{.Values.imagePullPolicy}}"
-          ports:
-          - name: http
-            containerPort: {{.Values.containerPort}}
-          resources:
-            requests:
-              cpu: "{{.Values.cpu}}"
-              memory: "{{.Values.memory}}"
-          env:
-          - name: SQLSERVER
-            value: "{{ .Values.dbconfig.server }}"
-          - name: SQLPORT
-            value: "{{ .Values.dbconfig.port }}"
-          - name: SQLID
-            value: "{{ .Values.dbconfig.id }}"
-          - name: SQLPWD
-            value: "{{ .Values.dbconfig.pwd }}"
-          - name: SQLDB
-            value: "{{ .Values.dbconfig.dbname }}"
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: acrregistrykey
-type: Opaque
-data:
-  docker-server: "{{ .Values.acr.dockerserver }}"
-  docker-username: "{{ .Values.acr.dockerusername }}"
-  docker-password: "{{ .Values.acr.dockerpassword }}"
-  docker-email: "{{ .Values.acr.dockeremail }}"
+      - name: guestbook-db
+        image: microsoft/mssql-server-linux
+        env:
+        - name: ACCEPT_EULA
+          value: "Y"
+        - name: SA_PASSWORD
+          value: {{.Values.dbPassword}}
+        volumeMounts:
+        - mountPath: /var/opt/mssql
+          name: sqldb-home
+      volumes:
+      - name: sqldb-home
+        persistentVolumeClaim:
+          claimName: sqldb-pv

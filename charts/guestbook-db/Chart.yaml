@@ -1,0 +1,7 @@
+name: guestbook-db
+home: https://github.com/chzbrgr71/guestbook-web
+version: 1.1
+description: SQL Server on Linux DB 
+maintainers: 
+  - name: chzbrgr71
+    email: brianisrunning@gmail.com

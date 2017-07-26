@@ -1,0 +1,26 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: guestbook-db
+spec:
+  template:
+    metadata:
+      labels:
+        app: guestbook-db
+        component: guestbook-db
+    spec:
+      containers:
+      - name: guestbook-db
+        image: microsoft/mssql-server-linux
+        env:
+        - name: ACCEPT_EULA
+          value: "Y"
+        - name: SA_PASSWORD
+          value: Your@Password
+        volumeMounts:
+        - mountPath: /var/opt/mssql
+          name: sqldb-home
+      volumes:
+      - name: sqldb-home
+        persistentVolumeClaim:
+          claimName: sqldb-pv

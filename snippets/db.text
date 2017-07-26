@@ -1,0 +1,61 @@
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1beta1
+metadata:
+  name: azure-disk
+provisioner: kubernetes.io/azure-disk
+parameters:
+  skuName: Standard_LRS
+  location: "{{ .Values.disklocation }}"
+---
+apiVersion: "v1"
+kind: "PersistentVolumeClaim"
+metadata:
+  name: "sqldb-pv"
+  annotations:
+    volume.beta.kubernetes.io/storage-class: "azure-disk"
+spec:
+  accessModes:
+    - "ReadWriteOnce"
+  resources:
+    requests:
+      storage: "10Gi"
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    component: "{{.Release.Name}}-{{.Values.component}}"
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      component: "{{.Release.Name}}-{{.Values.component}}"
+  template:
+    metadata:
+      labels:
+        heritage: {{.Release.Service | quote }}
+        release: {{.Release.Name | quote }}
+        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+        component: "{{.Release.Name}}-{{.Values.component}}"
+    spec:  
+      containers:
+        - name: {{ template "fullname" . }}
+          image: "{{.Values.image}}:{{.Values.imageTag}}"
+          volumeMounts:
+          - mountPath: /var/opt/mssql
+            name: sqldb-home
+          imagePullPolicy: "{{.Values.imagePullPolicy}}"
+          ports:
+          - name: http
+            containerPort: {{.Values.containerPort}}
+      volumes:
+      - name: sqldb-home
+        persistentVolumeClaim:
+          claimName: sqldb-pv

@@ -1,0 +1,17 @@
+# Default values for guestbook-web.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+serviceType: LoadBalancer
+servicePort: 10433
+containerPort: 1433
+component: "guestbook-db"
+replicas: 1
+image: "microsoft/mssql-server-linux"
+imageTag: "latest"
+imagePullPolicy: "Always"
+dbPassword: Your@Password
+# Azure Disk settings
+disklocation: westus
+accessModes: ReadWriteOnce
+disksize: 10Gi
