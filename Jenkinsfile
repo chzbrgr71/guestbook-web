@@ -47,15 +47,53 @@ volumes:[
 
                 container('helm') {
                     // run helm chart linter
-                    println "DEBUG: ${chart_dir}"
                     helmLint(chart_dir)
                 }
             }
 
+            stage ('BUILD: containerize and publish') {
+
+                container('docker') {
+                    // Login to ACR
+                    withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: config.container_repo.jenkins_creds_id,
+                                    usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+                        sh "docker login briarregistry-microsoft.azurecr.io -u briarregistry -p 5XuGNf=zidx=/K46X7ig/BKKvO9nGIrE"
+                    }
+
+                    // build and publish container
+                    containerBuildPub(
+                        dockerfile: config.container_repo.dockerfile,
+                        host      : config.container_repo.host,
+                        acct      : acct,
+                        repo      : config.container_repo.repo,
+                        tags      : image_tags_list,
+                        auth_id   : config.container_repo.jenkins_creds_id
+                    )
+                }
+            }
+
+            stage ('SECURE: scan container images for vulnerabilities') {
+                println "DEBUG: Run vulnerability scan of container images in repo"
+    
+            }
             
-            
-            
-            
+            stage ('DEPLOY: helm release to k8s') {
+      
+                container('helm') {
+                    // Deploy using Helm chart
+                    helmDeploy(
+                        dry_run       : false,
+                        name          : config.app.name,
+                        namespace     : config.app.name,
+                        version_tag   : image_tags_list.get(0),
+                        chart_dir     : chart_dir,
+                        replicas      : config.app.replicas,
+                        cpu           : config.app.cpu,
+                        memory        : config.app.memory,
+                        hostname      : config.app.hostname
+                    )
+                }
+            }
             
             println "DEBUG: FINISHED"
         }
