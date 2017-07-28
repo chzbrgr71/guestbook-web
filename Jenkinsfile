@@ -1,8 +1,8 @@
 #!/usr/bin/groovy
 
 // load pipeline functions
-@Library('./PipelineFx.groovy')
-def pipeline = new co.brianredmond.jenkins.PipelineFx()
+//@Library('./PipelineFx.groovy')
+//def pipeline = new co.brianredmond.jenkins.PipelineFx()
 
 podTemplate(label: 'jenkins-pipeline', containers: [
     containerTemplate(name: 'jnlp', image: 'jenkinsci/jnlp-slave:2.62', args: '${computer.jnlpmac} ${computer.name}', workingDir: '/home/jenkins', resourceRequestCpu: '200m', resourceLimitCpu: '200m', resourceRequestMemory: '256Mi', resourceLimitMemory: '256Mi'),
@@ -28,7 +28,7 @@ volumes:[
             println "pipeline config ==> ${config}"
             
             // set additional git envvars for image tagging
-            pipeline.gitEnvVars()
+            gitEnvVars()
             
             println "FINISHED"
             
@@ -42,4 +42,26 @@ volumes:[
         
         
     }
+
+def gitEnvVars() {
+    // create git envvars
+    println "Setting envvars to tag container"
+
+    sh 'git rev-parse HEAD > git_commit_id.txt'
+    try {
+        env.GIT_COMMIT_ID = readFile('git_commit_id.txt').trim()
+        env.GIT_SHA = env.GIT_COMMIT_ID.substring(0, 7)
+    } catch (e) {
+        error "${e}"
+    }
+    println "env.GIT_COMMIT_ID ==> ${env.GIT_COMMIT_ID}"
+
+    sh 'git config --get remote.origin.url> git_remote_origin_url.txt'
+    try {
+        env.GIT_REMOTE_URL = readFile('git_remote_origin_url.txt').trim()
+    } catch (e) {
+        error "${e}"
+    }
+    println "env.GIT_REMOTE_URL ==> ${env.GIT_REMOTE_URL}"
+}
     
