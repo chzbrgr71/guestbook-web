@@ -1,0 +1,34 @@
+# Default values for guestbook-web.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+serviceType: ClusterIP
+servicePort: 80
+containerPort: 8080
+component: "guestbook-web"
+replicas: 2
+image: "briarregistry-microsoft.azurecr.io/chzbrgr71/guestbook-web"
+imageTag: "latest"
+imagePullPolicy: "Always"
+cpu: "10m"
+memory: "128Mi"
+dbconfig:
+  server: guestbook-db-guestbook-db.default.svc.cluster.local
+  port: 10433
+  id: sa
+  pwd: Your@Password
+  dbname: sql_guestbook
+# Ingress settings
+ingress:
+  enabled: true
+  hostname: guestbook-web.brianredmond.co
+  annotations:
+     kubernetes.io/ingress.class: nginx
+     kubernetes.io/tls-acme: "true"
+  tls: false
+# Azure Container Registry Secret
+acr:
+  dockerserver: YnJpYXJyZWdpc3RyeS1taWNyb3NvZnQuYXp1cmVjci5pbw==
+  dockerusername: YnJpYXJyZWdpc3RyeQ==
+  dockerpassword: NVh1R05mPXppZHg9L0s0Nlg3aWcvQktLdk85bkdJckU=
+  dockeremail: YnJpYW5pc3J1bm5pbmdAZ21haWwuY29t
