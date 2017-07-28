@@ -1,8 +1,8 @@
 #!/usr/bin/groovy
 
 // load pipeline functions
-@Library('./lib/Pipeline.groovy')
-def pipeline = new co.brianredmond.Pipeline()
+// @Library('./lib/Pipeline.groovy')
+def pipeline = new co.brianredmond.jenkins.PipelineFx()
 
 podTemplate(label: 'jenkins-pipeline', containers: [
     containerTemplate(name: 'jnlp', image: 'jenkinsci/jnlp-slave:2.62', args: '${computer.jnlpmac} ${computer.name}', workingDir: '/home/jenkins', resourceRequestCpu: '200m', resourceLimitCpu: '200m', resourceRequestMemory: '256Mi', resourceLimitMemory: '256Mi'),

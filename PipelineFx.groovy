@@ -1,5 +1,5 @@
 #!/usr/bin/groovy
-package co.brianredmond;
+package co.brianredmond.jenkins;
 
 def kubectlTest() {
     // Test that kubectl can correctly communication with the Kubernetes API
