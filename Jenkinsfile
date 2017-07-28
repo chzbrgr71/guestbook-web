@@ -47,6 +47,7 @@ volumes:[
 
                 container('helm') {
                     // run helm chart linter
+                    println "DEBUG: ${chart_dir}"
                     helmLint(chart_dir)
                 }
             }
