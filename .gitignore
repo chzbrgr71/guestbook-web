@@ -1,4 +1,4 @@
+#Jenkinsfile
+#jenkins-values.yaml
 **/.DS_Store
-Jenkinsfile
-jenkins-values.yaml
 /charts/guestbook-web/values.yaml
