@@ -1,7 +1,7 @@
 #!/usr/bin/groovy
 
 // load pipeline functions
-// Requires pipeline-github-lib plugin to load library from github
+// Requires pipeline-github-lib plugin to load library from Github
 @Library('github.com/chzbrgr71/jenkins-pipeline@master')
 def pipeline = new co.brianredmond.Pipeline()
 
