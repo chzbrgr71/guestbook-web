@@ -47,7 +47,7 @@ volumes:[
 
                 container('helm') {
                     // run helm chart linter
-                    pipeline.helmLint(chart_dir)
+                    helmLint(chart_dir)
                 }
             }
 
