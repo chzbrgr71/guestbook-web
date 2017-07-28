@@ -103,6 +103,8 @@ volumes:[
              
     }
 
+// Utility functions. These would normally be in an external library in a seperate repo
+
 def kubectlTest() {
     // Test that kubectl can correctly communication with the Kubernetes API
     println "checking kubectl connnectivity to the API"
@@ -139,7 +141,7 @@ def helmDeploy(Map args) {
         println "Running deployment"
         println "CMD: helm upgrade --install --wait ${args.name} ${args.chart_dir} --set imageTag=${args.version_tag},replicas=${args.replicas},cpu=${args.cpu},memory=${args.memory}"
         //sh "helm upgrade --install --wait ${args.name} ${args.chart_dir} --set imageTag=${args.version_tag},replicas=${args.replicas},cpu=${args.cpu},memory=${args.memory} --namespace=${args.namespace}"
-        sh "helm upgrade guestbook ${args.chart_dir} --set imageTag=${args.version_tag}"
+        sh "helm upgrade guestbook-web ${args.chart_dir} --set imageTag=${args.version_tag}"
 
         echo "Application ${args.name} successfully deployed. Use helm status ${args.name} to check"
     }
