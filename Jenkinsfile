@@ -1,7 +1,7 @@
 #!/usr/bin/groovy
 
 // load pipeline functions
-// @Library('./lib/Pipeline.groovy')
+@Library('PipelineFx.groovy')
 def pipeline = new co.brianredmond.jenkins.PipelineFx()
 
 podTemplate(label: 'jenkins-pipeline', containers: [
