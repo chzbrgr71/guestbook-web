@@ -78,21 +78,54 @@ volumes:[
     
             }
             
-            stage ('DEPLOY: helm release to k8s') {
-      
-                container('helm') {
-                    // Deploy using Helm chart
-                    helmDeploy(
-                        dry_run       : false,
-                        name          : config.app.name,
-                        namespace     : config.app.name,
-                        version_tag   : image_tags_list.get(0),
-                        chart_dir     : chart_dir,
-                        replicas      : config.app.replicas,
-                        cpu           : config.app.cpu,
-                        memory        : config.app.memory,
-                        hostname      : config.app.hostname
-                    )
+            // if pull request, deploy test release and run helm tests
+            if (env.BRANCH_NAME =~ "PR-*" ) {
+                stage ('DEPLOY: helm release to k8s') {
+                    container('helm') {
+                        // Deploy using Helm chart
+                        helmDeploy(
+                            dry_run       : false,
+                            name          : env.BRANCH_NAME.toLowerCase(),
+                            namespace     : env.BRANCH_NAME.toLowerCase(),
+                            version_tag   : image_tags_list.get(0),
+                            chart_dir     : chart_dir,
+                            replicas      : config.app.replicas,
+                            cpu           : config.app.cpu,
+                            memory        : config.app.memory,
+                            hostname      : config.app.hostname
+                        )
+                        //  Run helm tests
+                        if (config.app.test) {
+                            helmTest(
+                                name        : env.BRANCH_NAME.toLowerCase()
+                            )
+                        }
+                        // delete test deployment
+                        helmDelete(
+                            name       : env.BRANCH_NAME.toLowerCase()
+                        )
+                    }
+                }     
+            }
+
+            // full deployment for master branch
+            if (env.BRANCH_NAME == 'master') {
+                stage ('DEPLOY: helm release to k8s') {
+        
+                    container('helm') {
+                        // Deploy using Helm chart
+                        helmDeploy(
+                            dry_run       : false,
+                            name          : config.app.name,
+                            namespace     : config.app.name,
+                            version_tag   : image_tags_list.get(0),
+                            chart_dir     : chart_dir,
+                            replicas      : config.app.replicas,
+                            cpu           : config.app.cpu,
+                            memory        : config.app.memory,
+                            hostname      : config.app.hostname
+                        )
+                    }
                 }
             }
             

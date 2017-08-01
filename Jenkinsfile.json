@@ -4,7 +4,7 @@
     "replicas": "2",
     "cpu": "10m",
     "memory": "128Mi",
-    "test": true,
+    "test": false,
     "hostname": "guestbook-web.brianredmond.co"
   },
   "container_repo": {
