@@ -57,7 +57,8 @@ volumes:[
                     // Login to ACR
                     withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: config.container_repo.jenkins_creds_id,
                                     usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-                        sh "docker login briarregistry-microsoft.azurecr.io -u briarregistry -p 5XuGNf=zidx=/K46X7ig/BKKvO9nGIrE"
+                        //sh "docker login briarregistry-microsoft.azurecr.io -u briarregistry -p 5XuGNf=zidx=/K46X7ig/BKKvO9nGIrE"
+                        sh "docker login ${config.container_repo.host} -u ${env.USERNAME} -p ${env.PASSWORD}"
                     }
 
                     // build and publish container
