@@ -195,13 +195,13 @@ def helmDeploy(Map args) {
 }
 
 def helmDelete(Map args) {
-        println "Running helm delete ${args.name}"
+        println "DEBUG: Running helm delete ${args.name}"
 
         sh "helm delete ${args.name}"
 }
 
 def helmTest(Map args) {
-    println "Running Helm test"
+    println "DEBUG: Running Helm test"
 
     sh "helm test ${args.name} --cleanup"
 }
@@ -217,7 +217,7 @@ def gitEnvVars() {
     } catch (e) {
         error "${e}"
     }
-    println "env.GIT_COMMIT_ID ==> ${env.GIT_COMMIT_ID}"
+    println "DEBUG: env.GIT_COMMIT_ID ==> ${env.GIT_COMMIT_ID}"
 
     sh 'git config --get remote.origin.url> git_remote_origin_url.txt'
     try {
