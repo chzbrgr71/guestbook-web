@@ -155,30 +155,43 @@ def helmLint(String chart_dir) {
 
 def helmConfig() {
     //setup helm connectivity to Kubernetes API and Tiller
-    println "initiliazing helm client"
+    println "DEBUG: initiliazing helm client"
     sh "helm init"
-    println "checking client/server version"
+    println "DEBUG: checking client/server version"
     sh "helm version"
 }
 
 
 def helmDeploy(Map args) {
-    //configure helm client and confirm tiller process is installed
-    //helmConfig()
+    // configure helm client and confirm tiller process is installed
+    helmConfig()
+
+    def String namespace
+
+    // if namespace isn't parsed into the function set the namespace to the name
+    if (args.namespace == null) {
+        namespace = args.name
+    } else {
+        namespace = args.namespace
+    }
 
     if (args.dry_run) {
-        println "Running dry-run deployment"
-        helmConfig()
-        //sh "helm upgrade --dry-run --install ${args.name} ${args.chart_dir} --set imageTag=${args.version_tag},replicas=${args.replicas},cpu=${args.cpu},memory=${args.memory} --namespace=${args.namespace}"
-        sh "helm upgrade --dry-run --install ${args.name} ${args.chart_dir} --set imageTag=${args.version_tag},replicas=${args.replicas},cpu=${args.cpu},memory=${args.memory}"
-    } else {
-        println "Running deployment"
-        println "CMD: helm upgrade --install --wait ${args.name} ${args.chart_dir} --set imageTag=${args.version_tag},replicas=${args.replicas},cpu=${args.cpu},memory=${args.memory}"
-        //sh "helm upgrade --install --wait ${args.name} ${args.chart_dir} --set imageTag=${args.version_tag},replicas=${args.replicas},cpu=${args.cpu},memory=${args.memory} --namespace=${args.namespace}"
-        sh "helm upgrade guestbook-web ${args.chart_dir} --set imageTag=${args.version_tag}"
+        println "DEBUG: Running dry-run deployment"
 
-        echo "Application ${args.name} successfully deployed. Use helm status ${args.name} to check"
+        sh "helm upgrade --dry-run --install ${args.name} ${args.chart_dir} --set imageTag=${args.version_tag},replicas=${args.replicas},cpu=${args.cpu},memory=${args.memory},ingress.hostname=${args.hostname} --namespace=${namespace}"
+    } else {
+        println "DEBUG: Running deployment"
+
+        // reimplement --wait once it works reliable
+        sh "helm upgrade --install ${args.name} ${args.chart_dir} --set imageTag=${args.version_tag},replicas=${args.replicas},cpu=${args.cpu},memory=${args.memory},ingress.hostname=${args.hostname} --namespace=${namespace}"
+
+        // sleeping until --wait works reliably
+        sleep(20)
+
+        echo "DEBUG: Application ${args.name} successfully deployed. Use helm status ${args.name} to check"
     }
+
+
 }
 
 def helmDelete(Map args) {
