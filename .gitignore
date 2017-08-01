@@ -2,4 +2,4 @@
 #jenkins-values.yaml
 #/charts/guestbook-web/values.yaml
 **/.DS_Store
-
+secret.yaml

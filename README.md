@@ -7,6 +7,11 @@ This app demonstrates a Jenkins pipeline with a Golang based web app and a SQL S
 
 ### Azure Container Registry
 
+* Add Kubernetes secret with ACR creds base64 encoded
+```
+kubectl create -f secret.yaml
+```
+
 ### Install Jenkins
 
 ### Database setup

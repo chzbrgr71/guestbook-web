@@ -26,9 +26,3 @@ ingress:
      kubernetes.io/ingress.class: nginx
      kubernetes.io/tls-acme: "true"
   tls: false
-# Azure Container Registry Secret
-acr:
-  dockerserver: YnJpYXJyZWdpc3RyeS1taWNyb3NvZnQuYXp1cmVjci5pbw==
-  dockerusername: YnJpYXJyZWdpc3RyeQ==
-  dockerpassword: NVh1R05mPXppZHg9L0s0Nlg3aWcvQktLdk85bkdJckU=
-  dockeremail: YnJpYW5pc3J1bm5pbmdAZ21haWwuY29t
