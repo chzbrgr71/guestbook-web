@@ -1,24 +1,27 @@
 # Guestbook CI/CD Demo with Jenkins
-This app demonstrates a Jenkins pipeline with a Golang based web app and a SQL Server on Linux container. Containers are deployed to ACS Kubernetes via Helm charts and images are stored in Azure Container Registry
+This app demonstrates a Jenkins pipeline with a Golang based web app and a SQL Server on Linux container. Containers are deployed to ACS Kubernetes via Helm charts and images are stored in Azure Container Registry.
+
+Thank you to Lachie Evenson for helping with this. Much of the demo is reverse engineered from the infamous [Croc Hunter demo.](https://github.com/lachie83/croc-hunter)
 
 ## Demo Setup
 
-### Fork or Clone this repo
+1. Fork or Clone this repo
 
-### Setup ACS Kubernetes
+2. Setup ACS Kubernetes/Helm
 
-Use standard Azure Container Service instructions [here.](https://docs.microsoft.com/en-us/azure/container-service/kubernetes/container-service-kubernetes-walkthrough)  
+* Use standard Azure Container Service instructions [here.](https://docs.microsoft.com/en-us/azure/container-service/kubernetes/container-service-kubernetes-walkthrough)  
+* Ensure kubectl is installed on your local machine and you have the proper kube config file (~/.kube/config)
+* Install helm and run ```helm init```
 
-### Azure Container Registry
+3. Azure Container Registry
 
-Use standard Azure Container Registry instructions [here.](https://docs.microsoft.com/en-us/azure/container-service/kubernetes/container-service-tutorial-kubernetes-prepare-acr) 
-
+* Use standard Azure Container Registry instructions [here.](https://docs.microsoft.com/en-us/azure/container-service/kubernetes/container-service-tutorial-kubernetes-prepare-acr) 
 * Add Kubernetes secret with ACR creds base64 encoded. Update secret-update.yaml with your values
 ```
 kubectl create -f secret.yaml
 ```
 
-### Install Jenkins
+4. Install Jenkins
 
 * Update jenkins-values.yaml
 * Install Jenkins helm chart
@@ -34,7 +37,7 @@ open ${JENKINS_URL}/login
 ```
 * Add ACR creds in Jenkins Global Credentials
 
-### Database setup
+5. Database setup
 
 * Helm chart install
 ```
@@ -56,7 +59,7 @@ CREATE TABLE guestlog (entrydate DATETIME, name NVARCHAR(30), phone NVARCHAR(30)
 INSERT INTO guestlog VALUES ('2017-5-2 23:59:59', 'anonymous', '12158379120', 'Get busy living, or get busy dying', '0.9950121');
 ```
 
-### Golang web app
+6. Golang web app
 
 Simple web page that connects to SQL Server and builds a table. Uses the following environment variables:
 * SQLSERVER
@@ -68,7 +71,7 @@ Simple web page that connects to SQL Server and builds a table. Uses the followi
 
 Installation/upgrade will occur with Jenkins pipeline.
 
-### Setup Jenkins Pipeline
+7. Setup Jenkins Pipeline
 
 * Open Jenkins Blue Ocean
 * Add Github organization
