@@ -19,7 +19,7 @@ Thank you to Lachie Evenson for helping with this. Much of the demo is reverse e
     * Add Kubernetes secret with ACR creds base64 encoded. Update secret-update.yaml with your values
     ```
     kubectl create -f secret.yaml
-```
+    ```
 
 4. Install Jenkins
 
