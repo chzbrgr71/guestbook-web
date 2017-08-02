@@ -11,7 +11,13 @@ Thank you to Lachie Evenson for helping with this. Much of the demo is reverse e
 
     * Use standard Azure Container Service instructions [here.](https://docs.microsoft.com/en-us/azure/container-service/kubernetes/container-service-kubernetes-walkthrough)  
     * Ensure kubectl is installed on your local machine and you have the proper kube config file (~/.kube/config)
-    * Install helm and run ```helm init```
+    * Install Helm 
+    ```
+    # MAC OS
+    brew install kubernetes-helm 
+    helm init
+    helm repo update
+    ```
 
 3. Azure Container Registry
 
@@ -20,24 +26,39 @@ Thank you to Lachie Evenson for helping with this. Much of the demo is reverse e
     ```
     kubectl create -f secret.yaml
     ```
+4. Add Infrastructure Stuff
+    * Install Kube Lego chart
+    ```
+    helm install stable/kube-lego --set config.LEGO_EMAIL=<valid-email>,config.LEGO_URL=https://acme-v01.api.letsencrypt.org/directory
+    ```
+    * Install Nginx ingress chart
+    ```
+    helm install stable/nginx-ingress
 
-4. Install Jenkins
+    Follow the notes from helm status to determine the external IP of the nginx-ingress service
+    ```
+    * Add a DNS entry with your provider and point it do the external IP
+    ```
+    blah.test.com in A <nginx ingress svc external-IP>
 
-    * Update jenkins-values.yaml
+    or *.test.com in A <nginx ingress svc external-IP>
+    ```
+
+5. Install Jenkins
+
+    * Update jenkins-values.yaml. Replace brianredmond.co with the domain name setup above.
     * Install Jenkins helm chart
     ```
     helm --namespace jenkins --name jenkins -f ./jenkins-values.yaml install stable/jenkins
-
-    watch kubectl get svc --namespace jenkins # wait for external ip
-    export JENKINS_IP=$(kubectl get svc jenkins-jenkins --namespace jenkins --template "{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}")
-    export JENKINS_URL=http://${JENKINS_IP}:8080
-
-    kubectl get pods --namespace jenkins # wait for running
-    open ${JENKINS_URL}/login
     ```
-    * Add ACR creds in Jenkins Global Credentials
+    * Once pod is up and running, browse to http://jenkins.brianredmond.co/login [replace with your domain name]
+    * Get Jenkins password:
+    ```
+    kubectl get secret --namespace jenkins jenkins-jenkins -o jsonpath="{.data.jenkins-admin-password}" | base64 --decode
+    ```
+    * Add ACR creds in Jenkins Global Credentials. Credentials > Jenkins > Global credentials > Add Credentials
 
-5. Database setup
+6. Database setup
 
     * Helm chart install
     ```
@@ -59,7 +80,7 @@ Thank you to Lachie Evenson for helping with this. Much of the demo is reverse e
     INSERT INTO guestlog VALUES ('2017-5-2 23:59:59', 'anonymous', '12158379120', 'Get busy living, or get busy dying', '0.9950121');
     ```
 
-6. Golang web app
+7. Golang web app
 
     Simple web page that connects to SQL Server and builds a table. Uses the following environment variables:
     * SQLSERVER
@@ -71,14 +92,15 @@ Thank you to Lachie Evenson for helping with this. Much of the demo is reverse e
 
     Installation/upgrade will occur with Jenkins pipeline.
 
-7. Setup Jenkins Pipeline
+8. Setup Jenkins Pipeline
 
     * Open Jenkins Blue Ocean
     * Add Github organization
 
+
 ## Running the Demo
 
-    * Make code changes in dev branch
-    * Git commit/add
-    * Submit PR
-    * Merge with Master
+    - Make code changes in dev branch
+    - Git commit/add
+    - Submit PR
+    - Merge with Master
