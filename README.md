@@ -114,3 +114,10 @@ git push
 4. PR pipeline will run
 5. Merge PR in Github and the master branch will build and deploy
 6. Validate updated web app
+
+## To Do List
+
+* Add Helm tests and incorporate into pipeline.
+* Automate database setup and seed data.
+* Clean up Web App UI.
+* Add image security scanning to workflow.
