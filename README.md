@@ -90,23 +90,21 @@ Thank you to Lachie Evenson for helping with this. Much of the demo is reverse e
     * The webhook will direct to http://jenkins-url/github-webhook/ 
 
 
-## Running the Demo
-
 The process for the demo is to make a change in the dev branch to kickoff an initial CD build and test. From there a PR is submitted and the CI process runs.
 
-    * Checkout dev branch
+    1. Checkout dev branch
     ```
     git checkout dev
     git merge master #if out of date
     ```
-    * Make code changes and commit
+    2. Make code changes and commit
     ```
     # After a simple update to the sqlguestbook.go code
     git add .
     git commit -m "Updated web UI"
     git push
     ```
-    * After pipeline is run for dev branch, submit a PR in Github repo
-    * PR pipeline will run
-    * Merge PR in Github and the master branch will build and deploy
-    * Validate updated web app
+    3. After pipeline is run for dev branch, submit a PR in Github repo
+    4. PR pipeline will run
+    5. Merge PR in Github and the master branch will build and deploy
+    6. Validate updated web app
