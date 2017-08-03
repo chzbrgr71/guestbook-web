@@ -44,22 +44,26 @@ Thank you to Lachie Evenson for helping with this. Much of the demo is reverse e
         or *.test.com in A <nginx ingress svc external-IP>
         ```
 
-5. Install Jenkins
+5. Install and configure Jenkins
 
     * Update jenkins-values.yaml. Replace brianredmond.co with the domain name setup above.
     * Install Jenkins helm chart
         ```
         helm --namespace jenkins --name jenkins -f ./jenkins-values.yaml install stable/jenkins
         ```
-    * Once pod is up and running, browse to http://jenkins.brianredmond.co/login [replace with your domain name]
-    * Get Jenkins password:
+    * Once pod is up and running, get Jenkins password:
         ```
         kubectl get secret --namespace jenkins jenkins-jenkins -o jsonpath="{.data.jenkins-admin-password}" | base64 --decode
         ```
-    * Add ACR creds in Jenkins Global Credentials. Credentials > Jenkins > Global credentials > Add Credentials
+    * Browse to http://jenkins.yourdomain.com/login [replace with your domain name]
+    * Add ACR creds in Jenkins in "Manage Jenkins" with ACR username and password. 
+        - Credentials > Jenkins > Global credentials > Add Credentials
+        - ID = acr_creds
 
-6. Database setup
+6. SQL Server database setup
 
+    * SQL Server on Linux is used here. Storage is mapped to PVC in Kubernetes.
+        * NOTE: Service type is defaulted to "LoadBalancer" here to allow remote connectivity to update the table. It is possible to use "ClusterIP" and keep the DB private to the cluster. In this case, you need to update the DB from a resource within the cluster.
     * Helm chart install
         ```
         helm install --name=guestbook-db ./charts/guestbook-db
@@ -73,6 +77,7 @@ Thank you to Lachie Evenson for helping with this. Much of the demo is reverse e
 
     * Seed data (use sqlcmd CLI tool)
         ```
+        # Need to script this...
         sqlcmd -S $SQLDB_IP,10433 -U sa -P 'Your@Password'
         CREATE DATABASE sql_guestbook;
         USE sql_guestbook;
