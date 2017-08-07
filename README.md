@@ -10,7 +10,7 @@ Thank you to Lachie Evenson for helping with this. Much of the demo is reverse e
 2. Setup ACS Kubernetes/Helm
 
     * Use standard Azure Container Service instructions [here.](https://docs.microsoft.com/en-us/azure/container-service/kubernetes/container-service-kubernetes-walkthrough)  
-    * Ensure kubectl is installed on your local machine and you have the proper kube config file (~/.kube/config) (this should be configured if to connect with ACS using the Azure CLI 2.0 using the command "az acs kubernetes get-credentials --resource-group=<myresourcegroupname> --name=<myclustername>")
+    * Ensure kubectl is installed on your local machine and you have the proper kube config file (~/.kube/config) (this should already be configured if if you followed the instructions in the previous step. Or you can use the Azure CLI 2.0 command "az acs kubernetes get-credentials --resource-group=<myresourcegroupname> --name=<myclustername>")
     * Install Helm 
         ```
         # MAC OS
