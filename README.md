@@ -10,7 +10,7 @@ Thank you to Lachie Evenson for helping with this. Much of the demo is reverse e
 2. Setup ACS Kubernetes/Helm
 
     * Use standard Azure Container Service instructions [here.](https://docs.microsoft.com/en-us/azure/container-service/kubernetes/container-service-kubernetes-walkthrough)  
-    * Ensure kubectl is installed on your local machine and you have the proper kube config file (~/.kube/config)
+    * Ensure kubectl is installed on your local machine and you have the proper kube config file (~/.kube/config) (this should be configured if to connect with ACS using the Azure CLI 2.0 using the command "az acs kubernetes get-credentials --resource-group=<myresourcegroupname> --name=<myclustername>")
     * Install Helm 
         ```
         # MAC OS
@@ -21,10 +21,11 @@ Thank you to Lachie Evenson for helping with this. Much of the demo is reverse e
 
 3. Azure Container Registry
 
-    * Use standard Azure Container Registry instructions [here.](https://docs.microsoft.com/en-us/azure/container-service/kubernetes/container-service-tutorial-kubernetes-prepare-acr) 
+    * Use standard Azure Container Registry instructions [here.](https://docs.microsoft.com/en-us/azure/container-service/kubernetes/container-service-tutorial-kubernetes-prepare-acr)
+    * copy all of the packages used below into your ACR using the docker commands in the above instruction
     * Add Kubernetes secret with ACR creds base64 encoded. Update secret-update.yaml with your values
         ```
-        kubectl create -f secret.yaml
+        kubectl create -f secret-update.yaml
         ```
 4. Add Infrastructure Stuff
     * Install Kube Lego chart
