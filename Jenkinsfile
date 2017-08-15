@@ -95,7 +95,7 @@ volumes:[
             // for dev branch, update Slack and complete 
             if (env.BRANCH_NAME == 'dev') {
                 println "DEBUG: update Slack for dev branch and do not deploy"
-                stage ('NOTIFY: notify dev team') {
+                stage ('NOTIFY: Slack notify DevOps') {
                     // add Slack update code here
                     println "updating Slack"
                 }
@@ -160,10 +160,7 @@ volumes:[
                 stage ('NOTIFY: Slack notify DevOps') {
                     // add Slack update code here
                     println "updating Slack"
-                    notifySlack(
-                            text          : "Pipeline completed. Master branch deployed to production",
-                            channel       : "#general"
-                    )
+                    notifySlack("Pipeline completed. Master branch deployed to production")
                 }
             }
             
@@ -184,9 +181,9 @@ def kubectlTest() {
 
 }
 
-def notifySlack(text, channel) {
+def notifySlack(String message) {
     def slackURL = 'https://hooks.slack.com/services/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'
-    def payload = JsonOutput.toJson([text      : text, channel   : channel, username  : "jenkins", icon_emoji: ":jenkins:"])
+    def payload = JsonOutput.toJson([text      : message, channel   : "#general", username  : "jenkins", icon_emoji: ":jenkins:"])
     
     sh "curl -X POST --data-urlencode \'payload=${payload}\' ${slackURL}"
 }
