@@ -1,4 +1,5 @@
 #!/usr/bin/groovy
+import groovy.json.JsonOutput
 
 podTemplate(label: 'jenkins-pipeline', containers: [
     containerTemplate(name: 'jnlp', image: 'jenkinsci/jnlp-slave:2.62', args: '${computer.jnlpmac} ${computer.name}', workingDir: '/home/jenkins', resourceRequestCpu: '200m', resourceLimitCpu: '200m', resourceRequestMemory: '256Mi', resourceLimitMemory: '256Mi'),
@@ -159,6 +160,14 @@ volumes:[
                 stage ('NOTIFY: notify dev team') {
                     // add Slack update code here
                     println "updating Slack"
+
+                    def notifySlack(text, channel) {
+                        def slackURL = 'https://hooks.slack.com/services/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'
+                        def payload = JsonOutput.toJson([text      : text, channel   : channel, username  : "jenkins", icon_emoji: ":jenkins:"])
+                        
+                        sh "curl -X POST --data-urlencode \'payload=${payload}\' ${slackURL}"
+                    }
+                    
                 }
             }
             
