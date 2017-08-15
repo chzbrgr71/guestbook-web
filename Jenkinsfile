@@ -43,6 +43,9 @@ volumes:[
                     sh "go build"
                     sh "go test -v"
                 }
+                if (config.pipeline.updateSlack) {
+                    notifySlack("Pipeline: golang stage complete.", config.pipeline.slackWebhookUrl)
+                }
             }
 
             stage ('TEST: k8s deployment') {
@@ -63,6 +66,9 @@ volumes:[
                         memory        : config.app.memory,
                         hostname      : config.app.hostname
                     )
+                }
+                if (config.pipeline.updateSlack) {
+                    notifySlack("Pipeline: helm tests complete.", config.pipeline.slackWebhookUrl)
                 }
             }
 
@@ -85,19 +91,24 @@ volumes:[
                         auth_id   : config.container_repo.jenkins_creds_id
                     )
                 }
+                if (config.pipeline.updateSlack) {
+                    notifySlack("Pipeline: Docker builds complete and pushed to ACR.", config.pipeline.slackWebhookUrl)
+                }
             }
 
             stage ('SECURE: scan container images for vulnerabilities') {
                 println "DEBUG: Run vulnerability scan of container images in repo"
-    
+
+                if (config.pipeline.updateSlack) {
+                    notifySlack("Pipeline: security scan complete.", config.pipeline.slackWebhookUrl)
+                }
             }
 
             // for dev branch, update Slack and complete 
             if (env.BRANCH_NAME == 'dev') {
                 if (config.pipeline.updateSlack) {
                     stage ('NOTIFY: Slack notify DevOps') {
-                        println "updating Slack"
-                        notifySlack("Pipeline completed. Dev branch cycle run", config.pipeline.slackWebhookUrl)
+                        notifySlack("Pipeline: Dev branch cycle complete", config.pipeline.slackWebhookUrl)
                     }
                 }
             }
@@ -130,8 +141,7 @@ volumes:[
                         )   
                     }
                     if (config.pipeline.updateSlack) {
-                        println "updating Slack"
-                        notifySlack(env.BRANCH_NAME + " pipeline complete. Click here to merge: https://github.com/chzbrgr71/guestbook-web/pulls", config.pipeline.slackWebhookUrl)
+                        notifySlack("Pipeline: " + env.BRANCH_NAME + " cycle complete. Click here to merge: https://github.com/chzbrgr71/guestbook-web/pulls", config.pipeline.slackWebhookUrl)
                     }
                 }     
             }
@@ -165,7 +175,7 @@ volumes:[
                 stage ('NOTIFY: Slack notify DevOps') {
                     if (config.pipeline.updateSlack) {
                         println "updating Slack"
-                        notifySlack("Pipeline completed. Master branch deployed to production. Tag=" + image_tags_list.get(0), config.pipeline.slackWebhookUrl)
+                        notifySlack("Pipeline: Master branch complete. deployed to production (" + image_tags_list.get(0) + ")", config.pipeline.slackWebhookUrl)
                     }
                 }
             }
@@ -276,7 +286,6 @@ def gitEnvVars() {
 def containerBuildPub(Map args) {
 
     println "Running Docker build/publish: ${args.host}/${args.acct}/${args.repo}:${args.tags}"
-    //Running Docker build/publish: briarregistry-microsoft.azurecr.io/chzbrgr71/go-guestbook:[master-ff6bc56, latest]
       
     docker.withRegistry("https://${args.host}", "${args.auth_id}") {
 
