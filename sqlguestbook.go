@@ -26,7 +26,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, htmlHeader)
 	var hostname = getHostname()
 	var gitSHA = os.Getenv("GIT_SHA")
-	var appversion = "2.1.1"
+	var appversion = "2.5.0"
 	fmt.Fprintf(w, "<h1>Golang Guestbook (v%s)</h1><p>Hostname: %s</p><p>Git: %s</p><table><tr><th>Date</th><th>Name</th><th>Phone</th><th>Sentiment</th><th>Message</th></tr>", appversion, hostname, gitSHA)
 
 	// query DB and loop through rows
@@ -57,15 +57,34 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 
 // HealthCheckHandler e.g. http.HandleFunc("/health-check", HealthCheckHandler)
 func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
-	// A very simple health check.
-	//w.WriteHeader(http.StatusUnauthorized)
+	// A very simple health check
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
 	io.WriteString(w, `{"alive": true}`)
 }
 
+func testHandler(resp http.ResponseWriter, req *http.Request) {
+	resp.Header().Add("Content-Type", "text/html")
+	resp.WriteHeader(http.StatusOK)
+	fmt.Fprint(resp, "OK")
+}
+
+func testdbHandler(resp http.ResponseWriter, req *http.Request) {
+	var connString = getConnectString()
+	conn, err := sql.Open("mssql", connString)
+	if err != nil {
+		log.Fatal("Open connection failed:", err.Error())
+	}
+	defer conn.Close()
+	resp.Header().Add("Content-Type", "text/html")
+	resp.WriteHeader(http.StatusOK)
+	fmt.Fprint(resp, "OK")
+}
+
 func main() {
 	http.HandleFunc("/", indexHandler)
+	http.HandleFunc("/test", testHandler)
+	http.HandleFunc("/testdb", testdbHandler)
 	http.ListenAndServe(":8080", nil)
 }
 
@@ -86,7 +105,7 @@ func getConnectString() string {
 
 	var sqlserver = os.Getenv("SQLSERVER")
 	if sqlserver == "" {
-		sqlserver = "ip.address"
+		sqlserver = "13.82.145.183"
 	}
 	var sqlport = os.Getenv("SQLPORT")
 	if sqlport == "" {

@@ -63,3 +63,11 @@ spec:
             value: "{{ .Values.dbconfig.pwd }}"
           - name: SQLDB
             value: "{{ .Values.dbconfig.dbname }}"
+          livenessProbe:
+            httpGet:
+              path: /test
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /test
+              port: http

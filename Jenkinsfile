@@ -48,16 +48,28 @@ volumes:[
                 container('helm') {
                     // run helm chart linter
                     helmLint(chart_dir)
+
+                    // run dry-run helm chart installation
+                    helmDeploy(
+                        dry_run       : true,
+                        name          : config.app.name,
+                        namespace     : config.app.name,
+                        version_tag   : image_tags_list.get(0),
+                        chart_dir     : chart_dir,
+                        replicas      : config.app.replicas,
+                        cpu           : config.app.cpu,
+                        memory        : config.app.memory,
+                        hostname      : config.app.hostname
+                    )
                 }
             }
 
-            stage ('BUILD: containerize and publish') {
+            stage ('BUILD: containerize and publish TO ACR') {
 
                 container('docker') {
                     // Login to ACR
                     withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: config.container_repo.jenkins_creds_id,
                                     usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-                        //sh "docker login briarregistry-microsoft.azurecr.io -u briarregistry -p 5XuGNf=zidx=/K46X7ig/BKKvO9nGIrE"
                         sh "docker login ${config.container_repo.host} -u ${env.USERNAME} -p ${env.PASSWORD}"
                     }
 
@@ -77,10 +89,19 @@ volumes:[
                 println "DEBUG: Run vulnerability scan of container images in repo"
     
             }
+
+            // for dev branch, update Slack and complete 
+            if (env.BRANCH_NAME == 'dev') {
+                println "DEBUG: update Slack for dev branch and do not deploy"
+                stage ('NOTIFY: notify dev team') {
+                    // add Slack update code here
+                    println "updating Slack"
+                }
+            }
             
             // if pull request, deploy test release and run helm tests
             if (env.BRANCH_NAME =~ "PR-*" ) {
-                stage ('DEPLOY: helm release to k8s') {
+                stage ('DEPLOY: PR test release with helm') {
                     container('helm') {
                         // Deploy using Helm chart
                         helmDeploy(
@@ -110,7 +131,7 @@ volumes:[
 
             // full deployment for master branch
             if (env.BRANCH_NAME == 'master') {
-                stage ('DEPLOY: helm release to k8s') {
+                stage ('DEPLOY: helm release master branch to k8s') {
         
                     container('helm') {
                         // Deploy using Helm chart
@@ -125,7 +146,18 @@ volumes:[
                             memory        : config.app.memory,
                             hostname      : config.app.hostname
                         )
+
+                        //  Run helm tests
+                        if (config.app.test) {
+                            helmTest(
+                                name        : env.BRANCH_NAME.toLowerCase()
+                            )
+                        }
                     }
+                }
+                stage ('NOTIFY: notify dev team') {
+                    // add Slack update code here
+                    println "updating Slack"
                 }
             }
             

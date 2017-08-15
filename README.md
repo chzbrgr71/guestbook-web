@@ -59,20 +59,24 @@ Thank you to Lachie Evenson for helping with this. Much of the demo is reverse e
     * Browse to http://jenkins.yourdomain.com/login [replace with your domain name]
     * Add ACR creds in Jenkins in "Manage Jenkins" with ACR username and password. 
         - Credentials > Jenkins > Global credentials > Add Credentials
+        - Username with password
         - ID = acr_creds
 
 6. SQL Server database setup
 
     * SQL Server on Linux is used here. Storage is mapped to PVC in Kubernetes.
         * NOTE: Service type is defaulted to "LoadBalancer" here to allow remote connectivity to update the table. It is possible to use "ClusterIP" and keep the DB private to the cluster. In this case, you need to update the DB from a resource within the cluster.
-    * Helm chart install
+    * Helm chart install. Modify values.yaml for chart. Ensure "disklocation" matches Azure region for ACS
         ```
         helm install --name=guestbook-db ./charts/guestbook-db
         ```
 
-    * Get IP for DB endpoint (wait patiently)
+    * Get IP for DB endpoint (wait patiently for pod to be running)
         ```
-        watch kubectl get svc guestbook-db-guestbook-db
+        # Wait for STATUS=Running
+        kubectl get pod -w
+
+        kubectl get svc -w guestbook-db-guestbook-db
         export SQLDB_IP=$(kubectl get svc guestbook-db-guestbook-db --template "{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}")
         ```
 
