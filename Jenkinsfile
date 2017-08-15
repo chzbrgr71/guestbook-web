@@ -36,6 +36,11 @@ volumes:[
             // compile tag list
             def image_tags_list = getMapValues(image_tags_map)
 
+            // set values for run
+            def buildName = env.JOB_NAME
+            def buildNumber = env.BUILD_NUMBER
+            def buildURL = env.BUILD_URL
+
             stage ('BUILD: code compile and test') {
 
                 container('golang') {
@@ -44,7 +49,8 @@ volumes:[
                     sh "go test -v"
                 }
                 if (config.pipeline.updateSlack) {
-                    notifySlack("Pipeline: golang stage complete.", config.pipeline.slackWebhookUrl)
+                    notifySlack("Pipeline(" + buildName + "/" + buildNumber + "): golang stage complete.", config.pipeline.slackWebhookUrl)
+                    notifySlack("buildURL: " + buildURL, config.pipeline.slackWebhookUrl)
                 }
             }
 
@@ -180,6 +186,9 @@ volumes:[
                 }
             }
             println "DEBUG: FINISHED"
+            if (config.pipeline.updateSlack) {
+                        notifySlack("*************", config.pipeline.slackWebhookUrl)
+            }
         }   
     }
 
