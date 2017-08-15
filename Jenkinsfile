@@ -151,7 +151,7 @@ volumes:[
                         //  Run helm tests
                         if (config.app.test) {
                             helmTest(
-                                name        : env.BRANCH_NAME.toLowerCase()
+                                name        : config.app.name
                             )
                         }
                     }
@@ -236,7 +236,7 @@ def helmDelete(Map args) {
 }
 
 def helmTest(Map args) {
-    println "DEBUG: Running Helm test"
+    println "DEBUG: Running: helm test ${args.name} --cleanup"
 
     sh "helm test ${args.name} --cleanup"
 }
