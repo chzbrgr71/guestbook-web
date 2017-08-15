@@ -97,10 +97,7 @@ volumes:[
                 if (config.pipeline.updateSlack) {
                     stage ('NOTIFY: Slack notify DevOps') {
                         println "updating Slack"
-                        notifySlack(
-                            message       : "Pipeline completed. Dev branch complete",
-                            slackURL      : config.pipeline.slackWebhookUrl                          
-                        )
+                        notifySlack("Pipeline completed. Dev branch cycle run", config.pipeline.slackWebhookUrl)
                     }
                 }
             }
@@ -134,10 +131,7 @@ volumes:[
                     }
                     if (config.pipeline.updateSlack) {
                         println "updating Slack"
-                        notifySlack(
-                            message       : "PR pipeline complete. Click here to merge: https://github.com/chzbrgr71/guestbook-web/pulls",
-                            slackURL      : config.pipeline.slackWebhookUrl                          
-                        )
+                        notifySlack(env.BRANCH_NAME + " pipeline complete. Click here to merge: https://github.com/chzbrgr71/guestbook-web/pulls", config.pipeline.slackWebhookUrl)
                     }
                 }     
             }
@@ -171,7 +165,7 @@ volumes:[
                 stage ('NOTIFY: Slack notify DevOps') {
                     if (config.pipeline.updateSlack) {
                         println "updating Slack"
-                        notifySlack("Pipeline completed. Master branch deployed to production", config.pipeline.slackWebhookUrl)
+                        notifySlack("Pipeline completed. Master branch deployed to production. Tag=" + image_tags_list.get(0), config.pipeline.slackWebhookUrl)
                     }
                 }
             }
