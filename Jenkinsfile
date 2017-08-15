@@ -171,20 +171,12 @@ volumes:[
                 stage ('NOTIFY: Slack notify DevOps') {
                     if (config.pipeline.updateSlack) {
                         println "updating Slack"
-                        notifySlack(
-                            message       : "Pipeline completed. Master branch deployed to production",
-                            slackURL      : config.pipeline.slackWebhookUrl                          
-                        )
+                        notifySlack("Pipeline completed. Master branch deployed to production", config.pipeline.slackWebhookUrl)
                     }
                 }
             }
-            
             println "DEBUG: FINISHED"
-        }
-    
-        
-        
-             
+        }   
     }
 
 // Utility functions. These would normally be in an external library in a seperate repo
