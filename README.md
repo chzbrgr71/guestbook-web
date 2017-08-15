@@ -104,6 +104,7 @@ Thank you to Lachie Evenson for helping with this. Much of the demo is reverse e
 8. Setup Github webhook in your repo
 
     * The webhook will direct to http://jenkins-url/github-webhook/ 
+    * Set it to "Send me everything"
 
 ## Running the Demo
 
