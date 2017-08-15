@@ -100,6 +100,11 @@ Thank you to Lachie Evenson for helping with this. Much of the demo is reverse e
         - Should have repo, user access
     * Create a Pipeline from a single repository
     * After selecting create, wait for Jenkins to load pipeline
+    * Configure org in Jenkins to build PR's
+        - In classic Jenkins, select your Github org
+        - Configure
+        - In "GitHub Organization" add "Discover pull requests from origin"
+        - Use "Merging the pull request with current target"
 
 8. Setup Github webhook in your repo
 

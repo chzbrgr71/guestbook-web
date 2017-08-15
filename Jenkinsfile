@@ -39,7 +39,10 @@ volumes:[
             // set values for run
             def buildName = env.JOB_NAME
             def buildNumber = env.BUILD_NUMBER
-            def buildURL = env.BUILD_URL
+            
+            if (config.pipeline.updateSlack) {
+                notifySlack("Pipeline: " + buildName + ", build#" + buildNumber + " starting.", config.pipeline.slackWebhookUrl)
+            }
 
             stage ('BUILD: code compile and test') {
 
@@ -49,8 +52,7 @@ volumes:[
                     sh "go test -v"
                 }
                 if (config.pipeline.updateSlack) {
-                    notifySlack("Pipeline(" + buildName + "/" + buildNumber + "): golang stage complete.", config.pipeline.slackWebhookUrl)
-                    notifySlack("buildURL: " + buildURL, config.pipeline.slackWebhookUrl)
+                    notifySlack("Pipeline (" + buildNumber + "): Code compile stage complete.", config.pipeline.slackWebhookUrl)
                 }
             }
 
@@ -74,7 +76,7 @@ volumes:[
                     )
                 }
                 if (config.pipeline.updateSlack) {
-                    notifySlack("Pipeline: helm tests complete.", config.pipeline.slackWebhookUrl)
+                    notifySlack("Pipeline (" + buildNumber + "): helm tests complete.", config.pipeline.slackWebhookUrl)
                 }
             }
 
@@ -98,7 +100,7 @@ volumes:[
                     )
                 }
                 if (config.pipeline.updateSlack) {
-                    notifySlack("Pipeline: Docker builds complete and pushed to ACR.", config.pipeline.slackWebhookUrl)
+                    notifySlack("Pipeline (" + buildNumber + "): Docker builds complete and pushed to ACR.", config.pipeline.slackWebhookUrl)
                 }
             }
 
@@ -106,7 +108,7 @@ volumes:[
                 println "DEBUG: Run vulnerability scan of container images in repo"
 
                 if (config.pipeline.updateSlack) {
-                    notifySlack("Pipeline: security scan complete.", config.pipeline.slackWebhookUrl)
+                    notifySlack("Pipeline (" + buildNumber + "): security scan complete.", config.pipeline.slackWebhookUrl)
                 }
             }
 
@@ -114,7 +116,7 @@ volumes:[
             if (env.BRANCH_NAME == 'dev') {
                 if (config.pipeline.updateSlack) {
                     stage ('NOTIFY: Slack notify DevOps') {
-                        notifySlack("Pipeline: Dev branch cycle complete", config.pipeline.slackWebhookUrl)
+                        notifySlack("Pipeline (" + buildNumber + "): " + env.BRANCH_NAME + " cycle complete.", config.pipeline.slackWebhookUrl)
                     }
                 }
             }
@@ -147,7 +149,7 @@ volumes:[
                         )   
                     }
                     if (config.pipeline.updateSlack) {
-                        notifySlack("Pipeline: " + env.BRANCH_NAME + " cycle complete. Click here to merge: https://github.com/chzbrgr71/guestbook-web/pulls", config.pipeline.slackWebhookUrl)
+                        notifySlack("Pipeline (" + buildNumber + "): " + env.BRANCH_NAME + " cycle complete. Click here to merge: https://github.com/chzbrgr71/guestbook-web/pulls", config.pipeline.slackWebhookUrl)
                     }
                 }     
             }
@@ -181,13 +183,14 @@ volumes:[
                 stage ('NOTIFY: Slack notify DevOps') {
                     if (config.pipeline.updateSlack) {
                         println "updating Slack"
-                        notifySlack("Pipeline: Master branch complete. deployed to production (" + image_tags_list.get(0) + ")", config.pipeline.slackWebhookUrl)
+                        notifySlack("Pipeline (" + buildNumber + "): " + env.BRANCH_NAME + " cycle complete. Image tag deployed to production: " + image_tags_list.get(0) + ".", config.pipeline.slackWebhookUrl)
                     }
                 }
             }
             println "DEBUG: FINISHED"
             if (config.pipeline.updateSlack) {
-                        notifySlack("*************", config.pipeline.slackWebhookUrl)
+                    notifySlack("Pipeline: " + buildName + ", build#" + buildNumber + " finished.", config.pipeline.slackWebhookUrl)
+                    notifySlack("*************", config.pipeline.slackWebhookUrl)
             }
         }   
     }
