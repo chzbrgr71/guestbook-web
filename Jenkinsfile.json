@@ -1,10 +1,10 @@
 {
   "app": {
     "name": "guestbook-web",
-    "replicas": "2",
+    "replicas": "3",
     "cpu": "10m",
     "memory": "128Mi",
-    "test": false,
+    "test": true,
     "hostname": "guestbook-web.brianredmond.co"
   },
   "container_repo": {
