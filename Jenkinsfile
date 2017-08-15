@@ -105,10 +105,14 @@ volumes:[
             }
 
             stage ('SECURE: scan container images for vulnerabilities') {
-                println "DEBUG: Run vulnerability scan of container images in repo"
-
-                if (config.pipeline.updateSlack) {
-                    notifySlack("Pipeline (" + buildNumber + "): security scan complete.", config.pipeline.slackWebhookUrl)
+                if (config.pipeline.runSecurityScan) {
+                    println "DEBUG: Run vulnerability scan of container images in repo"
+                    // Insert Aqua trigger scan here...
+                    
+                    
+                    if (config.pipeline.updateSlack) {
+                        notifySlack("Pipeline (" + buildNumber + "): security scan complete.", config.pipeline.slackWebhookUrl)
+                    }    
                 }
             }
 
@@ -182,8 +186,7 @@ volumes:[
                 }
                 stage ('NOTIFY: Slack notify DevOps') {
                     if (config.pipeline.updateSlack) {
-                        println "updating Slack"
-                        notifySlack("Pipeline (" + buildNumber + "): " + env.BRANCH_NAME + " cycle complete. Image tag deployed to production: " + image_tags_list.get(0) + ".", config.pipeline.slackWebhookUrl)
+                        notifySlack("Pipeline (" + buildNumber + "): " + env.BRANCH_NAME + " cycle complete. Image tag deployed to production: " + image_tags_list.get(0) + ". http://guestbook-web.brianredmond.co", config.pipeline.slackWebhookUrl)
                     }
                 }
             }
