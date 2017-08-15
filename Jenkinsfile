@@ -246,6 +246,10 @@ def gitEnvVars() {
     println "Setting envvars to tag container"
 
     sh 'git rev-parse HEAD > git_commit_id.txt'
+    println "1:"
+    println readFile('git_commit_id.txt').trim()
+    println "2:"
+    println readFile('git_commit_id.txt').substring(0, 7)
     try {
         env.GIT_COMMIT_ID = readFile('git_commit_id.txt').trim()
         env.GIT_SHA = env.GIT_COMMIT_ID.substring(0, 7)
