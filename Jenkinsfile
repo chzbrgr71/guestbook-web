@@ -94,10 +94,14 @@ volumes:[
 
             // for dev branch, update Slack and complete 
             if (env.BRANCH_NAME == 'dev') {
-                println "DEBUG: update Slack for dev branch and do not deploy"
-                stage ('NOTIFY: Slack notify DevOps') {
-                    // add Slack update code here
-                    println "updating Slack"
+                if (config.pipeline.updateSlack) {
+                    stage ('NOTIFY: Slack notify DevOps') {
+                        println "updating Slack"
+                        notifySlack(
+                            message       : "Pipeline completed. Dev branch complete",
+                            slackURL      : config.pipeline.slackWebhookUrl                          
+                        )
+                    }
                 }
             }
             
@@ -126,6 +130,13 @@ volumes:[
                         // delete test deployment
                         helmDelete(
                             name       : env.BRANCH_NAME.toLowerCase()
+                        )   
+                    }
+                    if (config.pipeline.updateSlack) {
+                        println "updating Slack"
+                        notifySlack(
+                            message       : "PR pipeline complete. Click here to merge: https://github.com/chzbrgr71/guestbook-web/pulls",
+                            slackURL      : config.pipeline.slackWebhookUrl                          
                         )
                     }
                 }     
@@ -158,9 +169,13 @@ volumes:[
                     }
                 }
                 stage ('NOTIFY: Slack notify DevOps') {
-                    // add Slack update code here
-                    println "updating Slack"
-                    notifySlack("Pipeline completed. Master branch deployed to production")
+                    if (config.pipeline.updateSlack) {
+                        println "updating Slack"
+                        notifySlack(
+                            message       : "Pipeline completed. Master branch deployed to production",
+                            slackURL      : config.pipeline.slackWebhookUrl                          
+                        )
+                    }
                 }
             }
             
@@ -173,19 +188,18 @@ volumes:[
     }
 
 // Utility functions. These would normally be in an external library in a seperate repo
+def notifySlack(String message, String slackURL) {
+    def slackURL = 'slackURL'
+    def payload = JsonOutput.toJson([text      : message, channel   : "#general", username  : "jenkins", icon_emoji: ":jenkins:"])
+    
+    sh "curl -X POST --data-urlencode \'payload=${payload}\' ${slackURL}"
+}
 
 def kubectlTest() {
     // Test that kubectl can correctly communication with the Kubernetes API
     println "checking kubectl connnectivity to the API"
     sh "kubectl get nodes"
 
-}
-
-def notifySlack(String message) {
-    def slackURL = 'https://hooks.slack.com/services/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'
-    def payload = JsonOutput.toJson([text      : message, channel   : "#general", username  : "jenkins", icon_emoji: ":jenkins:"])
-    
-    sh "curl -X POST --data-urlencode \'payload=${payload}\' ${slackURL}"
 }
 
 def helmLint(String chart_dir) {
