@@ -189,7 +189,6 @@ volumes:[
 
 // Utility functions. These would normally be in an external library in a seperate repo
 def notifySlack(String message, String slackURL) {
-    def slackURL = 'slackURL'
     def payload = JsonOutput.toJson([text      : message, channel   : "#general", username  : "jenkins", icon_emoji: ":jenkins:"])
     
     sh "curl -X POST --data-urlencode \'payload=${payload}\' ${slackURL}"
