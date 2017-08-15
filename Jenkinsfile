@@ -157,17 +157,13 @@ volumes:[
                         }
                     }
                 }
-                stage ('NOTIFY: notify dev team') {
+                stage ('NOTIFY: Slack notify DevOps') {
                     // add Slack update code here
                     println "updating Slack"
-
-                    def notifySlack(text, channel) {
-                        def slackURL = 'https://hooks.slack.com/services/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'
-                        def payload = JsonOutput.toJson([text      : text, channel   : channel, username  : "jenkins", icon_emoji: ":jenkins:"])
-                        
-                        sh "curl -X POST --data-urlencode \'payload=${payload}\' ${slackURL}"
-                    }
-                    
+                    notifySlack(
+                            text          : "Pipeline completed. Master branch deployed to production",
+                            channel       : "#general"
+                    )
                 }
             }
             
@@ -186,6 +182,13 @@ def kubectlTest() {
     println "checking kubectl connnectivity to the API"
     sh "kubectl get nodes"
 
+}
+
+def notifySlack(text, channel) {
+    def slackURL = 'https://hooks.slack.com/services/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'
+    def payload = JsonOutput.toJson([text      : text, channel   : channel, username  : "jenkins", icon_emoji: ":jenkins:"])
+    
+    sh "curl -X POST --data-urlencode \'payload=${payload}\' ${slackURL}"
 }
 
 def helmLint(String chart_dir) {
