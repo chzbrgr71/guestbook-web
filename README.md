@@ -92,8 +92,14 @@ Thank you to Lachie Evenson for helping with this. Much of the demo is reverse e
 
 7. Setup Jenkins Pipeline
 
-    * Open Jenkins Blue Ocean
-    * Add Github organization. A Github access token will need to be created for this step
+    * Jenkins, Open Blue Ocean
+    * Create a new Pipeline
+    * Add Github organization
+        - Create a Github access token
+        - Under Github profile settings, Personal access tokens
+        - Should have repo, user access
+    * Create a Pipeline from a single repository
+    * After selecting create, wait for Jenkins to load pipeline
 
 8. Setup Github webhook in your repo
 
