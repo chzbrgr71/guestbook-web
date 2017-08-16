@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sql-pod
+spec:
+  containers:
+  - name: sql-pod-container
+    image: microsoft/mssql-server-linux
+    env:
+      - name: ACCEPT_EULA
+        value: "Y"
+      - name: SA_PASSWORD
+        value: Your@Password
+  initContainers:
+  - name: init1
+    image: microsoft/mssql-server-linux
+    command:
+    - "/opt/mssql-tools/bin/sqlcmd"
+    - "-S"
+    - "13.82.145.183,10433"
+    - "-U"
+    - "sa"
+    - "-P"
+    - "Your@Password"
+    - "-Q"
+    - "'SELECT Name from sys.Databases;'"

@@ -81,14 +81,19 @@ Thank you to Lachie Evenson for helping with this. Much of the demo is reverse e
         ```
 
     * Seed data (use sqlcmd CLI tool)
+        - Automated method: 
         ```
-        # Need to script this...
+        sqlcmd -S $SQLDB_IP,10433 -U sa -P 'Your@Password' -i "./dbsetup.sql" -o "./out.log"
+        ```
+        - Manual method:    
+        ```
         sqlcmd -S $SQLDB_IP,10433 -U sa -P 'Your@Password'
         CREATE DATABASE sql_guestbook;
         USE sql_guestbook;
         CREATE TABLE guestlog (entrydate DATETIME, name NVARCHAR(30), phone NVARCHAR(30), message TEXT, sentiment_score NVARCHAR(30));
         INSERT INTO guestlog VALUES ('2017-5-2 23:59:59', 'anonymous', '12158379120', 'Get busy living, or get busy dying', '0.9950121');
         ```
+        - Future Plan: Use an initContainer in Pod
 
 7. Setup Jenkins Pipeline
 
