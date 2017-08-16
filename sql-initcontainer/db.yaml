@@ -17,7 +17,7 @@ spec:
     command:
     - "/opt/mssql-tools/bin/sqlcmd"
     - "-S"
-    - "13.82.145.183,10433"
+    - "guestbook-db-guestbook-db.default.svc.cluster.local,10433"
     - "-U"
     - "sa"
     - "-P"
