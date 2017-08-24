@@ -193,7 +193,6 @@ volumes:[
             println "DEBUG: FINISHED"
             if (config.pipeline.updateSlack) {
                     notifySlack("Pipeline: " + buildName + ", build#" + buildNumber + " finished.", config.pipeline.slackWebhookUrl)
-                    //notifySlack("*************", config.pipeline.slackWebhookUrl)
             }
         }   
     }
