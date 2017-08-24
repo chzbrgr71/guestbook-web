@@ -57,10 +57,12 @@ Thank you to Lachie Evenson for helping with this. Much of the demo is reverse e
         kubectl get secret --namespace jenkins jenkins-jenkins -o jsonpath="{.data.jenkins-admin-password}" | base64 --decode
         ```
     * Browse to http://jenkins.yourdomain.com/login [replace with your domain name]
+    * Upgrade Jenkins to the latest version and update plug-ins
     * Add ACR creds in Jenkins in "Manage Jenkins" with ACR username and password. 
         - Credentials > Jenkins > Global credentials > Add Credentials
         - Username with password
         - ID = acr_creds
+        - Description = acr_creds
 
 6. SQL Server database setup
 
@@ -71,7 +73,7 @@ Thank you to Lachie Evenson for helping with this. Much of the demo is reverse e
         helm install --name=guestbook-db ./charts/guestbook-db
         ```
 
-    * Get IP for DB endpoint (wait patiently for pod to be running)
+    * Get IP for DB endpoint (WAIT patiently for pod to be running)
         ```
         # Wait for STATUS=Running
         kubectl get pod -w

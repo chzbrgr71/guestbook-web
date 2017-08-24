@@ -12,6 +12,6 @@ imageTag: "latest"
 imagePullPolicy: "Always"
 dbPassword: Your@Password
 # Azure Disk settings
-disklocation: eastus
+disklocation: westus
 accessModes: ReadWriteOnce
-disksize: 10Gi
+disksize: 1Gi
