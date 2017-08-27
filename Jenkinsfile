@@ -115,15 +115,6 @@ volumes:[
                     }    
                 }
             }
-
-            // for dev branch, update Slack and complete 
-            if (env.BRANCH_NAME == 'dev') {
-                if (config.pipeline.updateSlack) {
-                    stage ('NOTIFY: Slack notify DevOps') {
-                        notifySlack("Pipeline (" + buildNumber + "): " + env.BRANCH_NAME + " cycle complete.", config.pipeline.slackWebhookUrl)
-                    }
-                }
-            }
             
             // if pull request, deploy test release and run helm tests
             if (env.BRANCH_NAME =~ "PR-*" ) {
