@@ -18,7 +18,7 @@
   },
   "pipeline": {
       "enabled": true,
-      "updateSlack": true,
+      "updateSlack": false,
       "slackWebhookUrl": "https://hooks.slack.com/services/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",
       "debug": false,
       "runSecurityScan": true,
