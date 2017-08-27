@@ -109,7 +109,7 @@ volumes:[
                     println "DEBUG: Run vulnerability scan of container images in repo"
                     // Insert Aqua trigger scan here...
                     def buildResult = 'success'
-                    def imageToScan = acct + "/" + config.container_repo.repo ":latest"
+                    def imageToScan = acct + "/" + config.container_repo.repo + ":latest"
 
                     try{
                         //sh 'docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v '+env.WORKSPACE+':/reports aquasec/scanner-cli:2.1.5 --local -image image_to_scan:tag --host ${AQUA_SERVER_URL} --user ${AQUA_USER} --password ${AQUA_PASS} --htmlfile /reports/aqua-scan.html'
