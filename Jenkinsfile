@@ -98,33 +98,27 @@ volumes:[
                         tags      : image_tags_list,
                         auth_id   : config.container_repo.jenkins_creds_id
                     )
+                    
+                    // run security scan on local image 
+                    if (config.pipeline.runSecurityScan) {
+                        println "DEBUG: Run vulnerability scan of container images in repo"
+                        def buildResult = 'success'
+                        def imageToScan = acct + "/" + config.container_repo.repo + ":latest"
+
+                        try{
+                            //sh 'docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v '+env.WORKSPACE+':/reports aquasec/scanner-cli:2.1.5 --local -image image_to_scan:tag --host ${AQUA_SERVER_URL} --user ${AQUA_USER} --password ${AQUA_PASS} --htmlfile /reports/aqua-scan.html'
+                            sh 'docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v '+env.WORKSPACE+':/reports aquasec/scanner-cli:2.1.5 --local -image ' + imageToScan + ' --host http://13.82.232.179:8080 --user administrator --password J0rdan23 --htmlfile /reports/aqua-scan.html'
+                        }catch(e){
+                            buildResult = 'failure'
+                            currentBuild.result = buildResult
+                            error("Build failed due to high vulnerability on image")
+                        } finally {
+                            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: './', reportFiles: 'aqua-scan.html', reportName: 'Aqua Scan Results'])
+                        }   
+                    }
                 }
                 if (config.pipeline.updateSlack) {
                     notifySlack("Pipeline (" + buildNumber + "): Docker builds complete and pushed to ACR.", config.pipeline.slackWebhookUrl)
-                }
-            }
-
-            stage ('SECURE: scan container images for vulnerabilities') {
-                if (config.pipeline.runSecurityScan) {
-                    println "DEBUG: Run vulnerability scan of container images in repo"
-                    // Insert Aqua trigger scan here...
-                    def buildResult = 'success'
-                    def imageToScan = acct + "/" + config.container_repo.repo + ":latest"
-
-                    try{
-                        //sh 'docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v '+env.WORKSPACE+':/reports aquasec/scanner-cli:2.1.5 --local -image image_to_scan:tag --host ${AQUA_SERVER_URL} --user ${AQUA_USER} --password ${AQUA_PASS} --htmlfile /reports/aqua-scan.html'
-                        sh 'docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v '+env.WORKSPACE+':/reports aquasec/scanner-cli:2.1.5 --local -image ' + imageToScan + ' --host http://13.82.232.179:8080 --user administrator --password J0rdan23 --htmlfile /reports/aqua-scan.html'
-                    }catch(e){
-                        buildResult = 'failure'
-                        currentBuild.result = buildResult
-                        error("Build failed due to high vulnerability on image")
-                    } finally {
-                        publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: './', reportFiles: 'aqua-scan.html', reportName: 'Aqua Scan Results'])
-                    }
-                    
-                    if (config.pipeline.updateSlack) {
-                        notifySlack("Pipeline (" + buildNumber + "): security scan complete.", config.pipeline.slackWebhookUrl)
-                    }    
                 }
             }
             
