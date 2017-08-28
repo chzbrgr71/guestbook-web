@@ -309,16 +309,7 @@ def scanImage(Map args){
         def buildResult = 'success'
         def imageToScan = args.host + "/" + args.acct + "/" + args.repo + ":" + args.tags.get(0)
 
-        try{
-            //sh 'docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v '+env.WORKSPACE+':/reports briarregistrynew.azurecr.io/aquasec/scanner-cli:2.1.5 --local -image ' + imageToScan + ' --host http://13.93.160.63:8080 --user administrator --password Aqua1234 --htmlfile /reports/aqua-scan.html'
-            sh "/opt/scalock/bin/scannercli --local -image ${imageToScan} --host http://13.93.160.63:8080 --user administrator --password Aqua1234 --htmlfile /reports/aqua-scan.html"
-            }catch(e){
-                buildResult = 'failure'
-                currentBuild.result = buildResult
-                error("Build failed due to high vulnerability on image")
-            } finally {
-                publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: './', reportFiles: 'aqua-scan.html', reportName: 'Aqua Scan Results'])
-            }   
+        sh "/opt/scalock/bin/scannercli --local -image ${imageToScan} --host http://13.93.160.63:8080 --user administrator --password Aqua1234 --htmlfile /reports/aqua-scan.html"
         }
 }
 
