@@ -107,7 +107,7 @@ volumes:[
 
                         try{
                             //sh 'docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v '+env.WORKSPACE+':/reports aquasec/scanner-cli:2.1.5 --local -image image_to_scan:tag --host ${AQUA_SERVER_URL} --user ${AQUA_USER} --password ${AQUA_PASS} --htmlfile /reports/aqua-scan.html'
-                            sh 'docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v '+env.WORKSPACE+':/reports aquasec/scanner-cli:2.1.5 --local -image ' + imageToScan + ' --host http://13.82.232.179:8080 --user administrator --password J0rdan23 --htmlfile /reports/aqua-scan.html'
+                            sh 'docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v '+env.WORKSPACE+':/reports briarregistrynew.azurecr.io/aquasec/scanner-cli:2.1.5 --local -image ' + imageToScan + ' --host http://13.93.160.63:8080 --user administrator --password Aqua1234 --htmlfile /reports/aqua-scan.html'
                         }catch(e){
                             buildResult = 'failure'
                             currentBuild.result = buildResult
