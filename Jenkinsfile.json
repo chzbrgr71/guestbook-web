@@ -8,7 +8,7 @@
     "hostname": "guestbook-web.brianredmond.co"
   },
   "container_repo": {
-    "host": "briarregistrynew.azurecr.io",
+    "host": "aquatest.azurecr.io",
     "master_acct": "chzbrgr71",
     "alt_acct": "chzbrgr71",
     "jenkins_creds_id": "acr_creds",
