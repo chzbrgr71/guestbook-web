@@ -301,6 +301,7 @@ def containerBuildPub(Map args) {
         //for (int i = 0; i < args.tags.size(); i++) {
             //img.push(args.tags.get(i))
         //}
+        sh "docker images"
         img.push(args.tags.get(0))
         return img.id
     }
