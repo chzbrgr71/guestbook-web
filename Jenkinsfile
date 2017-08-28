@@ -103,6 +103,7 @@ volumes:[
                     notifySlack("Pipeline (" + buildNumber + "): Docker builds complete and pushed to ACR.", config.pipeline.slackWebhookUrl)
                 }
             }
+            }
             
             // if pull request, deploy test release and run helm tests
             if (env.BRANCH_NAME =~ "PR-*" ) {
@@ -305,7 +306,6 @@ def containerBuildPub(Map args) {
             }
         }
     }
-}
 
 def getContainerTags(config, Map tags = [:]) {
 
