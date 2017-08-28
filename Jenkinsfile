@@ -7,7 +7,8 @@ podTemplate(label: 'jenkins-pipeline', containers: [
     containerTemplate(name: 'docker', image: 'docker:17.06.0',       command: 'cat', ttyEnabled: true),
     containerTemplate(name: 'golang', image: 'golang:1.7.5', command: 'cat', ttyEnabled: true),
     containerTemplate(name: 'helm', image: 'lachlanevenson/k8s-helm:v2.5.0', command: 'cat', ttyEnabled: true),
-    containerTemplate(name: 'kubectl', image: 'lachlanevenson/k8s-kubectl:v1.4.8', command: 'cat', ttyEnabled: true)
+    containerTemplate(name: 'kubectl', image: 'lachlanevenson/k8s-kubectl:v1.4.8', command: 'cat', ttyEnabled: true),
+    containerTemplate(name: 'aqua', image: 'briarregistrynew.azurecr.io/aquasec/scanner-cli:2.1.5', command: 'cat', ttyEnabled: true)
 ],
 volumes:[
     hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock'),
@@ -104,6 +105,17 @@ volumes:[
                     notifySlack("Pipeline (" + buildNumber + "): Docker builds complete and pushed to ACR.", config.pipeline.slackWebhookUrl)
                 }
             }
+                container('aqua'){
+                    scanImage(
+                        dockerfile: config.container_repo.dockerfile,
+                        host      : config.container_repo.host,
+                        acct      : acct,
+                        repo      : config.container_repo.repo,
+                        tags      : image_tags_list,
+                        auth_id   : config.container_repo.jenkins_creds_id,
+                        scan      : config.pipeline.runSecurityScan
+                    )
+                }
             }
             
             // if pull request, deploy test release and run helm tests
@@ -287,25 +299,29 @@ def containerBuildPub(Map args) {
         //}
         img.push(args.tags.get(0))
     
-        // run security scan on local image 
-        if (args.scan) {
-            println "DEBUG: Run vulnerability scan of container images in repo"
-            def buildResult = 'success'
-            def imageToScan = args.host + "/" + args.acct + "/" + args.repo + ":" + args.tags.get(0)
-
-            try{
-                sh 'docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v '+env.WORKSPACE+':/reports briarregistrynew.azurecr.io/aquasec/scanner-cli:2.1.5 --local -image ' + imageToScan + ' --host http://13.93.160.63:8080 --user administrator --password Aqua1234 --htmlfile /reports/aqua-scan.html'
-                }catch(e){
-                    buildResult = 'failure'
-                    currentBuild.result = buildResult
-                    error("Build failed due to high vulnerability on image")
-                } finally {
-                    publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: './', reportFiles: 'aqua-scan.html', reportName: 'Aqua Scan Results'])
-                }   
-            }
         return img.id
         }
     }
+
+def scanImage(Map args){
+    // run security scan on local image 
+    if (args.scan) {
+        println "DEBUG: Run vulnerability scan of container images in repo"
+        def buildResult = 'success'
+        def imageToScan = args.host + "/" + args.acct + "/" + args.repo + ":" + args.tags.get(0)
+
+        try{
+            //sh 'docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v '+env.WORKSPACE+':/reports briarregistrynew.azurecr.io/aquasec/scanner-cli:2.1.5 --local -image ' + imageToScan + ' --host http://13.93.160.63:8080 --user administrator --password Aqua1234 --htmlfile /reports/aqua-scan.html'
+            sh "/opt/scalock/bin/scannercli --local -image ' + imageToScan + ' --host http://13.93.160.63:8080 --user administrator --password Aqua1234 --htmlfile /reports/aqua-scan.html'"
+            }catch(e){
+                buildResult = 'failure'
+                currentBuild.result = buildResult
+                error("Build failed due to high vulnerability on image")
+            } finally {
+                publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: './', reportFiles: 'aqua-scan.html', reportName: 'Aqua Scan Results'])
+            }   
+        }
+}
 
 def getContainerTags(config, Map tags = [:]) {
 
