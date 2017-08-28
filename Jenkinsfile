@@ -97,7 +97,7 @@ volumes:[
                         repo      : config.container_repo.repo,
                         tags      : image_tags_list,
                         auth_id   : config.container_repo.jenkins_creds_id,
-                        scan      : "true"
+                        scan      : config.pipeline.runSecurityScan
                     )
                     
                 if (config.pipeline.updateSlack) {
