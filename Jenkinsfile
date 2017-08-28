@@ -96,7 +96,8 @@ volumes:[
                         acct      : acct,
                         repo      : config.container_repo.repo,
                         tags      : image_tags_list,
-                        auth_id   : config.container_repo.jenkins_creds_id
+                        auth_id   : config.container_repo.jenkins_creds_id,
+                        scan      : "true"
                     )
                     
                 if (config.pipeline.updateSlack) {
@@ -287,13 +288,12 @@ def containerBuildPub(Map args) {
         img.push(args.tags.get(0))
     
         // run security scan on local image 
-        if (config.pipeline.runSecurityScan) {
+        if (args.scan) {
             println "DEBUG: Run vulnerability scan of container images in repo"
             def buildResult = 'success'
             def imageToScan = args.host + "/" + args.acct + "/" + args.repo + ":" + args.tags.get(0)
 
             try{
-                //sh 'docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v '+env.WORKSPACE+':/reports aquasec/scanner-cli:2.1.5 --local -image image_to_scan:tag --host ${AQUA_SERVER_URL} --user ${AQUA_USER} --password ${AQUA_PASS} --htmlfile /reports/aqua-scan.html'
                 sh 'docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v '+env.WORKSPACE+':/reports briarregistrynew.azurecr.io/aquasec/scanner-cli:2.1.5 --local -image ' + imageToScan + ' --host http://13.93.160.63:8080 --user administrator --password Aqua1234 --htmlfile /reports/aqua-scan.html'
                 }catch(e){
                     buildResult = 'failure'
