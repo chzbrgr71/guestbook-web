@@ -285,7 +285,6 @@ def containerBuildPub(Map args) {
             //img.push(args.tags.get(i))
         //}
         img.push(args.tags.get(0))
-        return img.id
     
         // run security scan on local image 
         if (config.pipeline.runSecurityScan) {
@@ -304,6 +303,7 @@ def containerBuildPub(Map args) {
                     publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: './', reportFiles: 'aqua-scan.html', reportName: 'Aqua Scan Results'])
                 }   
             }
+        return img.id
         }
     }
 
