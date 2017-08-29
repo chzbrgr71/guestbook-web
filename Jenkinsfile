@@ -11,6 +11,7 @@ podTemplate(label: 'jenkins-pipeline', containers: [
 ],
 volumes:[
     hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock'),
+    hostPathVolume(mountPath: '/reports', hostPath: '/var/run/docker.sock')
 ])
     {
         node ('jenkins-pipeline') {
@@ -309,7 +310,9 @@ def scanImage(Map args){
         def buildResult = 'success'
         def imageToScan = args.host + "/" + args.acct + "/" + args.repo + ":" + args.tags.get(0)
         
-        sh "/opt/aquasec/scannercli --local -image ${imageToScan} --host http://13.93.160.63:8080 --user administrator --password Aqua1234 --htmlfile aqua-scan.html"
+        sh "/opt/aquasec/scannercli --local -image ${imageToScan} --host http://13.93.160.63:8080 --user administrator --password Aqua1234 --htmlfile ./aqua-scan.html"
+        
+        publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: './', reportFiles: 'aqua-scan.html', reportName: 'Aqua Scan Results'])
         }
 }
 
