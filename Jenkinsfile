@@ -309,7 +309,7 @@ def scanImage(Map args){
         def buildResult = 'success'
         def imageToScan = args.host + "/" + args.acct + "/" + args.repo + ":" + args.tags.get(0)
         
-        sh "/opt/scalock/bin/scannercli --local -image ${imageToScan} --host http://13.93.160.63:8080 --user administrator --password Aqua1234 --htmlfile aqua-scan.html"
+        sh "/opt/aquasec/scannercli --local -image ${imageToScan} --host http://13.93.160.63:8080 --user administrator --password Aqua1234 --htmlfile aqua-scan.html"
         }
 }
 
