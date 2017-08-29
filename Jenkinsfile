@@ -310,10 +310,9 @@ def scanImage(Map args){
         def buildResult = 'success'
         def imageToScan = args.host + "/" + args.acct + "/" + args.repo + ":" + args.tags.get(0)
         
-        sh "/opt/aquasec/scannercli --local -image ${imageToScan} --host http://13.93.160.63:8080 --user administrator --password Aqua1234 --htmlfile ./aqua-scan.html"
+        sh "/opt/aquasec/scannercli --local --register -image ${imageToScan} --host http://13.93.160.63:8080 --user administrator --password Aqua1234"
         
-        publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: './', reportFiles: 'aqua-scan.html', reportName: 'Aqua Scan Results'])
-        }
+    }
 }
 
 def getContainerTags(config, Map tags = [:]) {
