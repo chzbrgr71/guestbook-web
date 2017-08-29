@@ -7,7 +7,7 @@ servicePort: 80
 containerPort: 8080
 component: "guestbook-web"
 replicas: 3
-image: "briarregistrynew.azurecr.io/chzbrgr71/guestbook-web"
+image: "aquatest.azurecr.io/chzbrgr71/guestbook-web"
 imageTag: "latest"
 imagePullPolicy: "Always"
 cpu: "10m"
