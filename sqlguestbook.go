@@ -26,7 +26,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, htmlHeader)
 	var hostname = getHostname()
 	var gitSHA = os.Getenv("GIT_SHA")
-	var appversion = "2.7.6"
+	var appversion = "2.7.9"
 	fmt.Fprintf(w, "<h1>New Guestbook (v%s)</h1><p>Hostname: %s</p><p>Git: %s</p><table><tr><th>Date</th><th>Name</th><th>Phone</th><th>Sentiment</th><th>Message</th></tr>", appversion, hostname, gitSHA)
 
 	// query DB and loop through rows
