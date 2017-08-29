@@ -310,7 +310,7 @@ def scanImage(Map args){
         def buildResult = 'success'
         def imageToScan = args.host + "/" + args.acct + "/" + args.repo + ":" + args.tags.get(0)
         
-        sh "/opt/aquasec/scannercli --local --register -image ${imageToScan} --host http://13.93.160.63:8080 --user administrator --password Aqua1234"
+        sh "/opt/aquasec/scannercli --local --register --registry aqua-ACR -image ${imageToScan} --host http://13.93.160.63:8080 --user administrator --password Aqua1234"
         
     }
 }
