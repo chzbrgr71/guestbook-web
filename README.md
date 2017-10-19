@@ -35,6 +35,8 @@ Thank you to Lachie Evenson for helping with this. Much of the demo is reverse e
     * Install Nginx ingress chart
         ```
         helm install stable/nginx-ingress
+        OR
+        helm install --name ingress stable/nginx-ingress --set rbac.create=true
 
         Follow the notes from helm status to determine the external IP of the nginx-ingress service
         ```
